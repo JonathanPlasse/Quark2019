@@ -45,7 +45,7 @@ void Motor::run() {
   //Compute the actual speed of the motor
   _lastPosition = _position;
   _position = getPosition();
-  _actualSpeed = (_position - _lastPosition) / _sampleTime;
+  _actualSpeed = (_position - _lastPosition) / _sampleTime * 1000;
 
   _pid.compute();
 

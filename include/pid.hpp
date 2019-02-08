@@ -6,7 +6,7 @@
 class PID {
 public:
   //Initialisation of the PID class
-  PID(uint32_t* setpoint, uint32_t* input, uint32_t* output, float kp, float ki, float kd);
+  PID(int32_t* setpoint, int32_t* input, int32_t* output, float kp, float ki, float kd);
 
   //Set sample time
   void setSampleTime(uint32_t sampleTime);
@@ -24,7 +24,7 @@ public:
   void compute();
 
 private:
-  uint32_t *_setpoint, *_input, *_output;
+  int32_t *_setpoint, *_input, *_output;
   float _kp, _ki, _kd;
   uint16_t _sampleTime;
 
@@ -32,7 +32,7 @@ private:
 
   uint8_t _running;
 
-  uint32_t _lastInput, _integral, _derivative;
+  int32_t _lastInput, _integral, _derivative;
 };
 
 #endif
