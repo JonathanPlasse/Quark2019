@@ -8,7 +8,7 @@
 class Motor {
 public:
   //Initialisation of the Motor class
-  Motor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, const Encoder& enc, uint16_t sampleTime, float kp, float ki, float kd);
+  Motor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, uint8_t encPin1, uint8_t encPin2, uint16_t sampleTime, float kp, float ki, float kd);
 
   //Get the pwm sent to the H bridge
   int32_t getPwm() const;

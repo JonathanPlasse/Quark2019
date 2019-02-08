@@ -38,11 +38,11 @@ void PID::compute() {
     *_output = (int32_t) _kp * error + _integral - _kd * _derivative;
 
     if (*_output > _maxOutput) {
-      _integral -= (*_output - _maxOutput);
+      // _integral -= (*_output - _maxOutput);
       *_output = _maxOutput;
     }
     else if (*_output < -_maxOutput) {
-      _integral += (-_maxOutput - *_output);
+      // _integral += (-_maxOutput - *_output);
       *_output = -_maxOutput;
     }
 

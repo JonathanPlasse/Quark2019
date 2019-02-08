@@ -1,13 +1,13 @@
 #include "motor.hpp"
 #include <Arduino.h>
 
-Motor::Motor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, const Encoder& enc, uint16_t sampleTime, float kp, float ki, float kd) :
-_dirPin1(dirPin1), _dirPin2(dirPin2), _pwmPin(pwmPin) , _enc(enc), _sampleTime(sampleTime), _pid(&_targetSpeed, &_actualSpeed, &_pwm, kp, ki, kd) {
+Motor::Motor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, uint8_t encPin1, uint8_t encPin2, uint16_t sampleTime, float kp, float ki, float kd) :
+_dirPin1(dirPin1), _dirPin2(dirPin2), _pwmPin(pwmPin) , _enc(encPin1, encPin2), _sampleTime(sampleTime), _pid(&_targetSpeed, &_actualSpeed, &_pwm, kp, ki, kd) {
   pinMode(_dirPin1, OUTPUT);
   pinMode(_dirPin2, OUTPUT);
   analogWrite(_pwmPin, 0);
   _pid.setSampleTime(_sampleTime);
-  _pid.setOutputLimit(255);
+  _pid.setOutputLimit(200);
   _pid.start();
 }
 
@@ -48,6 +48,6 @@ void Motor::run() {
   _actualSpeed = (_position - _lastPosition) / _sampleTime * 1000;
 
   _pid.compute();
-
   setPwm(_pwm);
+  Serial.println(_actualSpeed);
 }
