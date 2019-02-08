@@ -1,10 +1,18 @@
 #include "pid.hpp"
 
-PID::PID(uint32_t& setpoint, uint32_t& input, uint32_t& output, uint16_t kp, uint16_t ki, uint16_t kd, uint8_t sampleTime) : _setpoint(setpoint), _input(input), _output(output), _kp(kp), _ki(ki), _kd(kd), _sampleTime(sampleTime) {
+PID::PID(uint32_t* setpoint, uint32_t* input, uint32_t* output, float kp, float ki, float kd) : _setpoint(setpoint), _input(input), _output(output), _kp(kp), _ki(ki), _kd(kd) {
   _running = 0;
   _lastInput = 0;
   _integral = 0;
   _maxOutput = -1;
+  _sampleTime = 1;
+}
+
+void PID::setSampleTime(uint32_t sampleTime) {
+  float ratio = sampleTime / _sampleTime;
+  _ki *= ratio;
+  _kd /= ratio;
+  _sampleTime = sampleTime;
 }
 
 void PID::setOutputLimit(uint32_t maxOutput) {
@@ -22,23 +30,23 @@ void PID::stop() {
 void PID::compute() {
   if (_running) {
     /*Compute all the working error variables*/
-    _error = _setpoint - _input;
-    _integral += _error;
-    _derivative = _input - _lastInput;
+    uint32_t error = *_setpoint - *_input;
+    _integral += (uint32_t) _ki * error;
+    _derivative = *_input - _lastInput;
 
     /*Compute PID Output*/
-    _output = _kp * _error + _ki * _integral - _kd * _derivative;
+    *_output = (uint32_t) _kp * error + _integral - _kd * _derivative;
 
-    if (_output > _maxOutput) {
-      _integral -= (_output - _maxOutput) / _ki;
-      _output = _maxOutput;
+    if (*_output > _maxOutput) {
+      _integral -= (*_output - _maxOutput);
+      *_output = _maxOutput;
     }
-    else if (_output < -_maxOutput) {
-      _integral += (-_maxOutput - _output) / _ki;
-      _output = -_maxOutput;
+    else if (*_output < -_maxOutput) {
+      _integral += (-_maxOutput - *_output);
+      *_output = -_maxOutput;
     }
 
     /*Remember some variables for next time*/
-    _lastInput = _input;
+    _lastInput = *_input;
   }
 }
