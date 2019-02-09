@@ -9,6 +9,11 @@ _dirPin1(dirPin1), _dirPin2(dirPin2), _pwmPin(pwmPin) , _enc(encPin1, encPin2), 
   _pid.setSampleTime(_sampleTime);
   _pid.setOutputLimit(200);
   _pid.start();
+  _pwm = 0;
+  _position = 0;
+  _lastPosition = 0;
+  _targetSpeed = 0;
+  _actualSpeed = 0;
 }
 
 int32_t Motor::getPwm() const {
@@ -45,9 +50,8 @@ void Motor::run() {
   //Compute the actual speed of the motor
   _lastPosition = _position;
   _position = getPosition();
-  _actualSpeed = (_position - _lastPosition) / _sampleTime * 1000;
+  _actualSpeed = (_position - _lastPosition) * 1000 / _sampleTime;
 
   _pid.compute();
   setPwm(_pwm);
-  Serial.println(_actualSpeed);
 }

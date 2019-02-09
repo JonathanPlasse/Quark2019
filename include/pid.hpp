@@ -28,7 +28,7 @@ private:
   float _kp, _ki, _kd;
   uint16_t _sampleTime;
 
-  uint32_t _maxOutput;
+  int32_t _maxOutput;
 
   uint8_t _running;
 
