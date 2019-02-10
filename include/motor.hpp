@@ -16,13 +16,16 @@ public:
   //Set the pwm sent to the H bridge
   void setPwm(int32_t pwm);
 
-  //Get the position of the motor in step
+  //Get the position of the motor in steps
   int32_t getPosition() const;
 
-  //Get the speed of the motor in step/second
-  int32_t getSpeed() const;
+  //Get the target speed of the motor in steps/seconds
+  int32_t getTargetSpeed() const;
 
-  //Set the speed of the motor in step/s
+  //Get the speed of the motor in step/seconds
+  int32_t getActualSpeed() const;
+
+  //Set the speed of the motor in steps/seconds
   void setSpeed(int32_t speed);
 
   //Run the control system of the speed

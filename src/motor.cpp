@@ -38,8 +38,12 @@ int32_t Motor::getPosition() const {
   return _enc.read();
 }
 
-int32_t Motor::getSpeed() const {
+int32_t Motor::getTargetSpeed() const {
   return _targetSpeed;
+}
+
+int32_t Motor::getActualSpeed() const {
+  return _actualSpeed;
 }
 
 void Motor::setSpeed(int32_t speed) {
