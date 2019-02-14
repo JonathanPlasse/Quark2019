@@ -62,5 +62,5 @@ void Motor::run() {
 
 void Motor::stop() {
   _pid.stop();
-  _pwm = 0;
+  setPwm(0);
 }
