@@ -8,7 +8,6 @@ _dirPin1(dirPin1), _dirPin2(dirPin2), _pwmPin(pwmPin) , _enc(encPin1, encPin2), 
   analogWrite(_pwmPin, 0);
   _pid.setSampleTime(_sampleTime);
   _pid.setOutputLimit(200);
-  _pid.start();
   _pwm = 0;
   _position = 0;
   _lastPosition = 0;
@@ -16,11 +15,11 @@ _dirPin1(dirPin1), _dirPin2(dirPin2), _pwmPin(pwmPin) , _enc(encPin1, encPin2), 
   _actualSpeed = 0;
 }
 
-int32_t Motor::getPwm() const {
-  return _pwm;
+int16_t Motor::getPwm() const {
+  return (int16_t)_pwm;
 }
 
-void Motor::setPwm(int32_t pwm) {
+void Motor::setPwm(int16_t pwm) {
   if (pwm > 0) {
     digitalWrite(_dirPin1, LOW);
     digitalWrite(_dirPin2, HIGH);
@@ -31,31 +30,37 @@ void Motor::setPwm(int32_t pwm) {
     digitalWrite(_dirPin2, LOW);
     analogWrite(_pwmPin, -pwm);
   }
-  _pwm = pwm;
+  _pwm = (float)pwm;
 }
 
 int32_t Motor::getPosition() const {
   return _enc.read();
 }
 
-int32_t Motor::getTargetSpeed() const {
+float Motor::getTargetSpeed() const {
   return _targetSpeed;
 }
 
-int32_t Motor::getActualSpeed() const {
+float Motor::getActualSpeed() const {
   return _actualSpeed;
 }
 
-void Motor::setSpeed(int32_t speed) {
+void Motor::setSpeed(float speed) {
   _targetSpeed = speed;
 }
 
 void Motor::run() {
   //Compute the actual speed of the motor
+  _pid.start();
   _lastPosition = _position;
   _position = getPosition();
   _actualSpeed = (_position - _lastPosition) * 1000 / _sampleTime;
 
   _pid.compute();
-  setPwm(_pwm);
+  setPwm((int16_t)_pwm);
+}
+
+void Motor::stop() {
+  _pid.stop();
+  _pwm = 0;
 }
