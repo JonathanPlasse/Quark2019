@@ -45,16 +45,19 @@ float Motor::getActualSpeed() const {
   return _actualSpeed;
 }
 
+void Motor::computeSpeed() {
+  _lastPosition = _position;
+  _position = getPosition();
+  _actualSpeed = (_position - _lastPosition) * 1000. / _sampleTime;
+}
+
 void Motor::setSpeed(float speed) {
   _targetSpeed = speed;
 }
 
 void Motor::run() {
   //Compute the actual speed of the motor
-  _pid.start();
-  _lastPosition = _position;
-  _position = getPosition();
-  _actualSpeed = (_position - _lastPosition) * 1000 / _sampleTime;
+  computeSpeed();
 
   _pid.compute();
   setPwm((int16_t)_pwm);

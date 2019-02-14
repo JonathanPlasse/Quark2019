@@ -31,12 +31,7 @@ Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, KP, KI, KD
 Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2, SAMPLE_TIME, KP, KI, KD);
 
 uint32_t lastTime, time;
-
-void sendToPC(float* data)
-{
-  byte* byteData = (byte*)(data);    // Casting to a byte pointer
-  Serial.write(byteData, 4);         // Send through Serial to the PC
-}
+float speed;
 
 void setup() {
   /*Change the frequency of the pins 9, 10*/
@@ -55,6 +50,8 @@ void loop() {
   }
   else if (time - lastTime > SAMPLE_TIME) {
     lastTime += SAMPLE_TIME;
-    sendToPC(m1.getPosition());
+    m1.run();
+    speed = m1.getActualSpeed();
+    Serial.println(speed);
   }
 }

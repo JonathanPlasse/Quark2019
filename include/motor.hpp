@@ -28,6 +28,9 @@ public:
   //Set the speed of the motor in steps/seconds
   void setSpeed(float speed);
 
+  //Compute the actual speed
+  void computeSpeed();
+
   //Run the control system of the speed
   //To call every sample time
   void run();
