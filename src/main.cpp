@@ -20,8 +20,8 @@
 
 //Asserevissement
 #define SAMPLE_TIME 10
-#define KP 0.5
-#define KI 0
+#define KP 222
+#define KI 1889
 #define KD 0.
 
 Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, KP, KI, KD);
@@ -34,8 +34,8 @@ void setup() {
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
   Serial.begin(115200);
-  m1.setSpeed(1633);
-  m2.setSpeed(1633);
+  m1.setSpeed(1633*2);
+  m2.setSpeed(1633*2);
   temps = millis() - SAMPLE_TIME;
 }
 

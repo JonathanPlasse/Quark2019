@@ -7,7 +7,7 @@ _dirPin1(dirPin1), _dirPin2(dirPin2), _pwmPin(pwmPin) , _enc(encPin1, encPin2), 
   pinMode(_dirPin2, OUTPUT);
   analogWrite(_pwmPin, 0);
   _pid.setSampleTime(_sampleTime);
-  _pid.setOutputLimit(200);
+  _pid.setOutputLimit(230);
   _pwm = 0;
   _position = 0;
   _lastPosition = 0;
