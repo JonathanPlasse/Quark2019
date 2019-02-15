@@ -39,19 +39,21 @@ void setup() {
 
   Serial.begin(115200);
   lastTime = millis() - SAMPLE_TIME;
-  m1.setPwm(255);
+  m1.setPwm(220);
 }
 
 
 void loop() {
   time = millis();
-  if (time > MAX_TIME) {
-    m1.stop();
-  }
-  else if (time - lastTime > SAMPLE_TIME) {
+  if (time - lastTime > SAMPLE_TIME) {
+    if (time < MAX_TIME) {
+      speed = m1.getActualSpeed();
+      Serial.println(speed);
+    }
+    else {
+      m1.stop();
+    }
     lastTime += SAMPLE_TIME;
     m1.computeSpeed();
-    speed = m1.getActualSpeed();
-    Serial.println(speed);
   }
 }
