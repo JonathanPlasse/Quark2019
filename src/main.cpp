@@ -19,7 +19,7 @@
 #define ENC2_PIN2 5
 
 //Asserevissement
-#define SAMPLE_TIME 5
+#define SAMPLE_TIME 10
 #define KP 0.5
 #define KI 0
 #define KD 0
@@ -50,7 +50,7 @@ void loop() {
   }
   else if (time - lastTime > SAMPLE_TIME) {
     lastTime += SAMPLE_TIME;
-    m1.run();
+    m1.computeSpeed();
     speed = m1.getActualSpeed();
     Serial.println(speed);
   }
