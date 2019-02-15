@@ -20,15 +20,13 @@ def echelon():
     return speeds
 
 if __name__ == '__main__':
-    for i in range(2):
-        speeds = echelon()
-        with open("speeds" + str(i) + ".txt", "w") as f:
-            for speed in speeds:
-                f.write(speed+"\n")
+    speeds = echelon()
+    with open("speeds.txt", "a+") as f:
+        for speed in speeds:
+            f.write(speed+"\n")
 
-        t = [i*0.01 for i in range(len(speeds))]
-        plt.plot(t, speeds, label=i)
+    t = [i*0.01 for i in range(len(speeds))]
+    plt.plot(t, speeds)
     plt.xlabel("Time in seconds")
     plt.ylabel("Speed in steps/seconds")
-    plt.legend()
     plt.show()

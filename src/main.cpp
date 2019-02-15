@@ -45,15 +45,13 @@ void setup() {
 
 void loop() {
   time = millis();
-  if (time - lastTime > SAMPLE_TIME) {
-    if (time < MAX_TIME) {
-      speed = m1.getActualSpeed();
-      Serial.println(speed);
-    }
-    else {
-      m1.stop();
-    }
+  if (time > MAX_TIME) {
+    m1.stop();
+  }
+  else if (time - lastTime > SAMPLE_TIME) {
     lastTime += SAMPLE_TIME;
     m1.computeSpeed();
+    speed = m1.getActualSpeed();
+    Serial.println(speed);
   }
 }
