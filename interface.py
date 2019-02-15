@@ -24,7 +24,7 @@ if __name__ == '__main__':
     speeds = echelon()
     with open("speeds.txt", "w") as f:
         for speed in speeds:
-            f.write(speed)
+            f.write(speed+"\n")
 
     t = [i*0.01 for i in range(len(speeds))]
     plt.plot(t, speeds)

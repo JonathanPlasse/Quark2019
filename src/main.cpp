@@ -39,7 +39,7 @@ void setup() {
 
   Serial.begin(115200);
   lastTime = millis() - SAMPLE_TIME;
-  m1.setPwm(200);
+  m1.setPwm(255);
 }
 
 
