@@ -32,12 +32,14 @@ Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2, SAMPLE_TIME, KP, KI, KD
 
 uint32_t lastTime, time;
 float speed;
+int32_t sampleTime;
 
 void setup() {
   /*Change the frequency of the pins 9, 10*/
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
   Serial.begin(115200);
+  Serial.parseInt();
   lastTime = millis() - SAMPLE_TIME;
   m1.setPwm(220);
 }

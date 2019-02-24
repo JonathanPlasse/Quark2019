@@ -10,9 +10,9 @@ PID::PID(float* setpoint, float* input, float* output, float kp, float ki, float
 }
 
 void PID::setSampleTime(uint32_t sampleTime) {
-  float ratio = sampleTime / _sampleTime;
-  _ki *= ratio;
-  _kd /= ratio;
+  // float ratio = sampleTime / _sampleTime;
+  // _ki *= ratio;
+  // _kd /= ratio;
   _sampleTime = sampleTime;
 }
 
