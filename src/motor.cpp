@@ -15,7 +15,7 @@ _dirPin1(dirPin1), _dirPin2(dirPin2), _pwmPin(pwmPin) , _enc(encPin1, encPin2), 
   _actualSpeed = 0;
 }
 
-void setSampleTime(uint16_t sampleTime) {
+void Motor::setSampleTime(uint16_t sampleTime) {
   _sampleTime = sampleTime;
   _pid.setSampleTime(_sampleTime);
 }

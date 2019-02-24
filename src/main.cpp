@@ -39,7 +39,7 @@ void setup() {
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
   Serial.begin(115200);
-  Serial.parseInt();
+  sampleTime = Serial.parseInt();
   lastTime = millis() - SAMPLE_TIME;
   m1.setPwm(220);
 }
