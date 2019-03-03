@@ -43,10 +43,14 @@ void setup() {
   Serial.begin(115200);
 
   //Ask sample time
+  Serial.println("Sample time?");
+  while(Serial.available() == 0);
   sampleTime = Serial.parseInt();
   m1.setSampleTime(sampleTime);
 
   //Ask the number of measure to do
+  Serial.println("Number of measure?");
+  while(Serial.available() == 0);
   nbMeasure = Serial.parseInt();
   nbMeasureDone = 0;
 
