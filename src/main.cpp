@@ -19,14 +19,13 @@
 #define ENC2_PIN2 5
 
 //Asserevissement
-#define SAMPLE_TIME 10
+#define SAMPLE_TIME 1
 #define KP 0.5
 #define KI 0
 #define KD 0
 
 //Test Moteur
 #define MEASURE_TIME 500
-#define WAIT_TIME 500
 #define PWM 220
 
 Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, KP, KI, KD);
@@ -42,18 +41,6 @@ void setup() {
 
   Serial.begin(115200);
 
-  //Ask sample time
-  Serial.println("Sample time?");
-  while(Serial.available() == 0);
-  sampleTime = Serial.parseInt();
-  m1.setSampleTime(sampleTime);
-
-  //Ask the number of measure to do
-  Serial.println("Number of measure?");
-  while(Serial.available() == 0);
-  nbMeasure = Serial.parseInt();
-  nbMeasureDone = 0;
-
   startTime = lastTime = millis() - SAMPLE_TIME;
   m1.setPwm(PWM);
 }
@@ -61,24 +48,18 @@ void setup() {
 
 void loop() {
   time = millis();
-  if (nbMeasureDone < nbMeasure && time - lastTime > SAMPLE_TIME) {
+  if (time - lastTime > SAMPLE_TIME) {
     lastTime += SAMPLE_TIME;
     m1.computeSpeed();
 
     if (time - startTime < MEASURE_TIME) {
-      m1.computeSpeed();
       speed = m1.getActualSpeed();
       Serial.print(speed);
       Serial.print(" ");
     }
-    else if (time - startTime < MEASURE_TIME + WAIT_TIME) {
-      m1.stop();
-    }
     else {
-      startTime = lastTime;
-      nbMeasureDone++;
+      m1.stop();
       Serial.println("");
-      m1.setPwm(PWM);
     }
   }
 }

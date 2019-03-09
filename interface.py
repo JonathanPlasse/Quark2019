@@ -5,7 +5,7 @@ import time
 import matplotlib.pyplot as plt
 
 def echelon():
-    with serial.Serial('/dev/ttyACM0', 115200, timeout=1) as ser:
+    with serial.Serial('/dev/ttyACM0', 115200, timeout=2) as ser:
         sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
         speeds = []
@@ -25,7 +25,7 @@ if __name__ == '__main__':
         for speed in speeds:
             f.write(speed+"\n")
 
-    t = [i*0.01 for i in range(len(speeds))]
+    t = [i*0.001 for i in range(len(speeds))]
     plt.plot(t, speeds)
     plt.xlabel("Time in seconds")
     plt.ylabel("Speed in steps/seconds")
