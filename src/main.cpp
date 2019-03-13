@@ -48,7 +48,7 @@ void setup() {
   nbMeasureDone = 0;
   nbSampleDone = 0;
 
-  startTime = lastTime = millis() - SAMPLE_TIME;
+  lastTime = millis() - SAMPLE_TIME;
   m1.setPwm(config.pwm);
 }
 
