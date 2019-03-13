@@ -45,9 +45,6 @@ void setup() {
   readData(&config, sizeof(configStruct));
   writeData(&config, sizeof(configStruct));
 
-  pinMode(13, OUTPUT);
-  digitalWrite(13, HIGH);
-
   nbMeasureDone = 0;
   nbSampleDone = 0;
 
@@ -64,17 +61,17 @@ void loop() {
   if (measure.timestamp - lastTime > SAMPLE_TIME) {
     lastTime += SAMPLE_TIME;
     m1.computeSpeed();
-    if (nbMeasureDone < config.nbMeasure) {
+    if (nbSampleDone < config.nbSample) {
       measure.position = m1.getPosition();
       measure.speed = m1.getActualSpeed();
       writeData(&measure, sizeof(measureStruct));
       nbSampleDone++;
     }
-    else if (nbMeasureDone < confige.nbMeasure + config.waitTime / SAMPLE_TIME) {
+    else if (nbSampleDone < config.nbSample + config.waitTime / SAMPLE_TIME) {
       m1.stop();
-      nbMeasureDone++;
+      nbSampleDone++;
     }
-    else {
+    else if (++nbMeasureDone < config.nbMeasure) {
       nbSampleDone = 0;
       m1.setPwm(config.pwm);
     }

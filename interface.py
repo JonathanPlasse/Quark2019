@@ -42,9 +42,9 @@ if __name__ == '__main__':
     portName = '/dev/ttyACM0'
     baudRate = 115200
 
-    nbMeasure = 1
-    nbSample = 100
-    waitTime = 500
+    nbMeasure = 10
+    nbSample = 50
+    waitTime = 1000
     pwm = 220
 
     # Define the format of the structure of data sent

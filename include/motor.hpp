@@ -25,11 +25,11 @@ public:
   //Get the target speed of the motor in steps/seconds
   float getTargetSpeed() const;
 
+  //Get the actual speed of the motor in steps/seconds
+  float getActualSpeed() const;
+
   //Set the target speed of the motor in steps/seconds
   void setTargetSpeed(float speed);
-
-  //Set the actual speed of the motor in steps/seconds
-  void setActualSpeed(float speed);
 
   //Compute the actual speed
   void computeSpeed();
