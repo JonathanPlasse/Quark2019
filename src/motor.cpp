@@ -60,10 +60,6 @@ void Motor::setTargetSpeed(float speed) {
   _targetSpeed = speed;
 }
 
-void Motor::setActualSpeed(float speed) {
-  _actualSpeed = speed;
-}
-
 void Motor::run() {
   //Compute the actual speed of the motor
   computeSpeed();

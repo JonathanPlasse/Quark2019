@@ -61,10 +61,10 @@ if __name__ == '__main__':
         # Write some data to the arduino
         writeData(ser, structFormatConfig, [nbMeasure, nbSample, waitTime, pwm])
         print(readData(ser, structFormatConfig))
-        for i in range(len(nbMeasure)):
-            for j in range(len(nbSample)):
-                timestamps[i][j], positions[i][j], speeds[i][j] = readData(ser, structFormatMeasure)
-        print(timestamps, positions, speeds)
+        for i in range(nbMeasure):
+            for j in range(nbSample):
+                # timestamps[i][j], positions[i][j], speeds[i][j] = readData(ser, structFormatMeasure)
+                print(readData(ser, structFormatMeasure))
 
     # t = [i*0.001 for i in range(len(speeds))]
     # plt.plot(t, speeds)
