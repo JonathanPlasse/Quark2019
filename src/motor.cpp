@@ -56,8 +56,12 @@ void Motor::computeSpeed() {
   _actualSpeed = (_position - _lastPosition) * 1000. / _sampleTime;
 }
 
-void Motor::setSpeed(float speed) {
+void Motor::setTargetSpeed(float speed) {
   _targetSpeed = speed;
+}
+
+void Motor::setActualSpeed(float speed) {
+  _actualSpeed = speed;
 }
 
 void Motor::run() {

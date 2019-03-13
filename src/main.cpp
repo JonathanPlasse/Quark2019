@@ -20,49 +20,53 @@
 #define ENC2_PIN2 5
 
 //Asserevissement
-#define SAMPLE_TIME 1
-#define KP 0.5
+#define SAMPLE_TIME 10
+#define KP 0
 #define KI 0
 #define KD 0
 
-typedef struct {uint8_t nbStepMeasure; uint16_t nbSample; uint16_t measureTime; uint16_t waitTime; uint8_t pwm;} config;
-typedef struct {uint32_t timestamp; uint32_t position; float vitesse;} measure;
+typedef struct {uint8_t nbMeasure; uint16_t nbSample; uint16_t waitTime; uint8_t pwm;} configStruct;
+typedef struct {uint32_t timestamp; uint32_t position; float speed;} measureStruct;
 
-config configPy;
-measure measurePy;
+configStruct config;
+measureStruct measure;
 
 Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, KP, KI, KD);
 Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2, SAMPLE_TIME, KP, KI, KD);
 
-uint32_t lastTime, time, startTime;
+uint32_t lastTime, lastWaitTime;
+uint16_t nbMeasureDone, nbSampleDone;
 
 void setup() {
   /*Change the frequency of the pins 9, 10*/
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
   Serial.begin(115200);
-  readData(&configPy, sizeof(config));
-  writeData(&configPy, sizeof(config));
+  readData(&config, sizeof(configStruct));
+  writeData(&config, sizeof(configStruct));
 
-  // startTime = lastTime = millis() - SAMPLE_TIME;
-  // m1.setPwm(configPy.pwm);
+  nbMeasureDone = 0;
+  nbSampleDone = 0;
+
+  startTime = lastTime = millis() - SAMPLE_TIME;
+  m1.setPwm(config.pwm);
 }
 
 
 void loop() {
-  // time = millis();
-  // if (time - lastTime > SAMPLE_TIME) {
-  //   lastTime += SAMPLE_TIME;
-  //   m1.computeSpeed();
-  //
-  //   if (time - startTime < MEASURE_TIME) {
-  //     speed = m1.getActualSpeed();
-  //     Serial.print(speed);
-  //     Serial.print(" ");
-  //   }
-  //   else {
-  //     m1.stop();
-  //     Serial.println("");
-  //   }
-  // }
+  measure.timestamp = millis();
+
+  if (measure.timestamp - lastTime > SAMPLE_TIME && nbSampleDone++ < config.nbSample && nbMeasureDone < config.nbMeasure) {
+    lastTime += SAMPLE_TIME;
+    m1.computeSpeed();
+    measure.position = m1.getPosition();
+    measure.speed = m1.getActualSpeed();
+  }
+  else {
+    m1.stop();
+    m1.setActualSpeed(0);
+    nbSampleDone = 0;
+    nbMeasureDone++;
+    delay(config.waitTime);
+  }
 }

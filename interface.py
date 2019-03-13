@@ -42,29 +42,29 @@ if __name__ == '__main__':
     portName = '/dev/ttyACM0'
     baudRate = 115200
 
-    nbStepMeasure = 1
+    nbMeasure = 1
     nbSample = 100
-    measureTime = 1000
     waitTime = 500
     pwm = 220
 
     # Define the format of the structure of data sent
-    structFormatConfig = ['uint8', 'uint16', 'uint16', 'uint16', 'uint8']
+    structFormatConfig = ['uint8', 'uint16', 'uint16', 'uint8']
     structFormatMeasure = ['uint32', 'uint32', 'float']
-    structFormatSize = ['uint32', 'uint32']
 
-    # speeds = [[0. for j in range(nbSample)] for i in range(nbStepMeasure)]
+    timestamps = [[0. for j in range(nbSample)] for i in range(nbMeasure)]
+    positions = [[0. for j in range(nbSample)] for i in range(nbMeasure)]
+    speeds = [[0. for j in range(nbSample)] for i in range(nbMeasure)]
 
     with serial.Serial(portName, baudRate, timeout=1) as ser:
         # Wait for the arduino to initilize
         time.sleep(2)
         # Write some data to the arduino
-        writeData(ser, structFormatConfig, [nbStepMeasure, nbSample, measureTime, waitTime, pwm])
+        writeData(ser, structFormatConfig, [nbMeasure, nbSample, waitTime, pwm])
         print(readData(ser, structFormatConfig))
-        # for i in range(len(nbStepMeasure)):
-        #     for j in range(len(nbSample)):
-        #         speeds[i][j] = readData(ser, structFormatMeasure)
-        # print(speeds)
+        for i in range(len(nbMeasure)):
+            for j in range(len(nbSample)):
+                timestamps[i][j], positions[i][j], speeds[i][j] = readData(ser, structFormatMeasure)
+        print(timestamps, positions, speeds)
 
     # t = [i*0.001 for i in range(len(speeds))]
     # plt.plot(t, speeds)
