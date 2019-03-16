@@ -50,10 +50,6 @@ float Motor::getActualSpeed() const {
   return _actualSpeed;
 }
 
-void Motor::resetActualSpeed() {
-  _position = getPosition();
-}
-
 void Motor::computeSpeed() {
   _lastPosition = _position;
   _position = getPosition();

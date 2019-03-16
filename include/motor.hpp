@@ -28,9 +28,6 @@ public:
   // Get the actual speed of the motor in steps/seconds
   float getActualSpeed() const;
 
-  // Reset the actual speed of the motor
-  void resetActualSpeed();
-
   // Set the target speed of the motor in steps/seconds
   void setTargetSpeed(float speed);
 
