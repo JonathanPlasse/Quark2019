@@ -43,8 +43,8 @@ if __name__ == '__main__':
     portName = '/dev/ttyACM0'
     baudRate = 115200
 
-    nbMeasure = 2
-    nbSample = 50
+    nbMeasure = 10
+    nbSample = 100
     waitTime = 1000
     pwm = 220
 
@@ -52,9 +52,9 @@ if __name__ == '__main__':
     structFormatConfig = ['uint8', 'uint16', 'uint16', 'uint8']
     structFormatMeasure = ['uint32', 'uint32', 'float']
 
-    timestamps = [[0. for j in range(nbSample)] for i in range(nbMeasure)]
-    positions = [[0. for j in range(nbSample)] for i in range(nbMeasure)]
-    speeds = [[0. for j in range(nbSample)] for i in range(nbMeasure)]
+    timestamps = np.zeros((nbMeasure, nbSample))
+    positions = np.zeros((nbMeasure, nbSample))
+    speeds = np.zeros((nbMeasure, nbSample))
 
     with serial.Serial(portName, baudRate, timeout=1) as ser:
         # Wait for the arduino to initilize
@@ -63,12 +63,16 @@ if __name__ == '__main__':
         writeData(ser, structFormatConfig, [nbMeasure, nbSample, waitTime, pwm])
         print(readData(ser, structFormatConfig))
         for i in range(nbMeasure):
+            print(i+1, '/', nbMeasure)
             for j in range(nbSample):
-                # timestamps[i][j], positions[i][j], speeds[i][j] = readData(ser, structFormatMeasure)
-                print(readData(ser, structFormatMeasure))
+                timestamps[i, j], positions[i, j], speeds[i, j] = readData(ser, structFormatMeasure)
 
-    # t = [i*0.001 for i in range(len(speeds))]
-    # plt.plot(t, speeds)
-    # plt.xlabel("Time in seconds")
-    # plt.ylabel("Speed in steps/seconds")
-    # plt.show()
+    print('Moyenne')
+    speed = np.mean(speeds, axis=0)
+    print(speed)
+    t = [i*0.001 for i in range(len(speed))]
+    plt.plot(t, speed)
+    plt.xlabel("Time in seconds")
+    plt.ylabel("Speed in steps/seconds")
+    plt.show()
+    np.savetxt('speed1.csv', speed)
