@@ -2,6 +2,7 @@
 import serial
 import struct
 import time
+import numpy as np
 import matplotlib.pyplot as plt
 
 typesDict = {'char': 'c', 'bool': '?',
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     portName = '/dev/ttyACM0'
     baudRate = 115200
 
-    nbMeasure = 10
+    nbMeasure = 2
     nbSample = 50
     waitTime = 1000
     pwm = 220

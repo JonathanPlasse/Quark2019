@@ -73,6 +73,7 @@ void loop() {
     }
     else if (++nbMeasureDone < config.nbMeasure) {
       nbSampleDone = 0;
+      m1.resetActualSpeed();
       m1.setPwm(config.pwm);
     }
   }
