@@ -67,10 +67,9 @@ if __name__ == '__main__':
             for j in range(nbSample):
                 timestamps[i, j], positions[i, j], speeds[i, j] = readData(ser, structFormatMeasure)
 
-    print('Moyenne')
     speed = np.mean(speeds, axis=0)
-    print(speed)
-    t = [i*0.001 for i in range(len(speed))]
+    t = [i*0.01 for i in range(1, len(speed))]
+
     plt.plot(t, speed)
     plt.xlabel("Time in seconds")
     plt.ylabel("Speed in steps/seconds")
