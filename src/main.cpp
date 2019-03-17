@@ -71,7 +71,8 @@ void loop() {
       m1.stop();
       nbSampleDone++;
     }
-    else if (++nbMeasureDone < config.nbMeasure) {
+    else if (nbMeasureDone < config.nbMeasure-1) {
+      ++nbMesureDone;
       nbSampleDone = 0;
       m1.setPwm(config.pwm);
     }
