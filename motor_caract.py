@@ -21,10 +21,13 @@ p2, _ = leastsq(residual, p0, args=(t, speed2))
 
 print(p1)
 print(p2)
-plt.figure()
+
+plt.figure(1)
 plt.plot(t, speed1)
 plt.plot(t, f(t, *p1))
-plt.figure()
+
+plt.figure(2)
 plt.plot(t, speed2)
 plt.plot(t, f(t, *p2))
+
 plt.show()
