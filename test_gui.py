@@ -23,7 +23,24 @@ class PidTuning(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.initControl()
         self.initUI()
+
+    def initControl(self):
+        self.nbStep = 1633
+        self.pwm = 220
+        self.Ts = 0.01
+        self.kp = 46
+        self.ki = 752
+
+        self.speed = np.loadtxt('speed1.csv')
+
+        p0 = np.ones(2)
+
+        self.t = np.array([self.Ts * i for i in range(100)])
+
+        p, _ = leastsq(residual, p0, args=(self.t, self.speed))
+        self.k, self.tau = p
 
     def initUI(self):
         self.figure = Figure()
@@ -67,49 +84,31 @@ class PidTuning(QWidget):
         self.setLayout(mainLayout)
 
     def plot(self):
-        speed = np.loadtxt('speed1.csv')
+        c = cnt.tf([self.kp, self.ki*self.Ts-self.kp], [1, -1], self.Ts)
 
-        p0 = np.ones(2)
-
-        t = np.array([0.01 * i for i in range(100)])
-
-        p, _ = leastsq(residual, p0, args=(t, speed))
-
-        k1, tau1 = p
-
-        nbStep = 1633
-        pwm = 220
-        Ts = 0.01
-        kp = 46.2
-        ki = 752
-
-        c = cnt.tf([kp, ki*Ts-kp], [1, -1], Ts)
-
-        gd = cnt.tf(k1 / nbStep / pwm, [tau1, 1]).sample(Ts)
+        gd = cnt.tf(self.k / self.nbStep / self.pwm, [self.tau, 1]).sample(self.Ts)
 
         y = cnt.feedback(c*gd)
         u = cnt.feedback(c, gd)
 
-        t = [0.01 * i for i in range(100)]
-
-        _, stepY = cnt.step_response(y, t)
-        _, stepU = cnt.step_response(u, t)
+        _, stepY = cnt.step_response(y, self.t)
+        _, stepU = cnt.step_response(u, self.t)
 
         self.figure.clear()
 
         olAx = self.figure.add_subplot(131)
-        olAx.plot(t, speed, label='real speed')
-        olAx.plot(t, f(t, *p), label='model speed')
+        olAx.plot(self.t, self.speed, label='real speed')
+        olAx.plot(self.t, f(self.t, self.k, self.tau), label='model speed')
         olAx.set_title('Open-loop')
         olAx.legend()
 
         yAx = self.figure.add_subplot(132)
-        yAx.plot(t, stepY[0], label='Y')
+        yAx.plot(self.t, stepY[0], label='Y')
         yAx.set_title('Y response')
         yAx.legend()
 
         uAx = self.figure.add_subplot(133)
-        uAx.plot(t, stepU[0], label='U')
+        uAx.plot(self.t, stepU[0], label='U')
         uAx.set_title('U response')
         uAx.legend()
 
