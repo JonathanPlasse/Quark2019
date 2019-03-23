@@ -83,7 +83,7 @@ class PidTuning(QWidget):
 
         self.setLayout(mainLayout)
 
-    def plot(self):
+    def computeResponse(self):
         c = cnt.tf([self.kp, self.ki*self.Ts-self.kp], [1, -1], self.Ts)
 
         gd = cnt.tf(self.k / self.nbStep / self.pwm, [self.tau, 1]).sample(self.Ts)
@@ -91,10 +91,13 @@ class PidTuning(QWidget):
         y = cnt.feedback(c*gd)
         u = cnt.feedback(c, gd)
 
-        _, stepY = cnt.step_response(y, self.t)
-        _, stepU = cnt.step_response(u, self.t)
+        _, self.stepY = cnt.step_response(y, self.t)
+        _, self.stepU = cnt.step_response(u, self.t)
 
+    def plot(self):
         self.figure.clear()
+
+        self.computeResponse()
 
         olAx = self.figure.add_subplot(131)
         olAx.plot(self.t, self.speed, label='real speed')
@@ -103,12 +106,12 @@ class PidTuning(QWidget):
         olAx.legend()
 
         yAx = self.figure.add_subplot(132)
-        yAx.plot(self.t, stepY[0], label='Y')
+        yAx.plot(self.t, self.stepY[0], label='Y')
         yAx.set_title('Y response')
         yAx.legend()
 
         uAx = self.figure.add_subplot(133)
-        uAx.plot(self.t, stepU[0], label='U')
+        uAx.plot(self.t, self.stepU[0], label='U')
         uAx.set_title('U response')
         uAx.legend()
 
