@@ -58,6 +58,7 @@ class PidTuning(QWidget):
         self.pLabel = QLabel('P')
         self.pSpinBox = QSpinBox()
         self.pSpinBox.setMaximum(10000)
+        self.pSpinBox.setValue(self.kp)
 
         pLayout = QHBoxLayout()
         pLayout.addWidget(self.pLabel)
@@ -66,6 +67,7 @@ class PidTuning(QWidget):
         self.iLabel = QLabel('I')
         self.iSpinBox = QSpinBox()
         self.iSpinBox.setMaximum(10000)
+        self.iSpinBox.setValue(self.ki)
 
         iLayout = QHBoxLayout()
         iLayout.addWidget(self.iLabel)
