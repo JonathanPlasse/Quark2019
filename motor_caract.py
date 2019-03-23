@@ -13,7 +13,7 @@ def residual(p, t, speed):
 speed1 = np.loadtxt('speed1.csv')
 speed2 = np.loadtxt('speed2.csv')
 
-p0 = np.array([9000, 0.15])
+p0 = np.ones(2)
 
 t = np.array([0.01 * i for i in range(100)])
 
