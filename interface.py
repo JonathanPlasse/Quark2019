@@ -68,7 +68,7 @@ if __name__ == '__main__':
                 timestamps[i, j], positions[i, j], speeds[i, j] = readData(ser, structFormatMeasure)
 
     speed = np.mean(speeds, axis=0)
-    t = [i*0.01 for i in range(1, len(speed))]
+    t = [i*0.01 for i in range(len(speed))]
 
     plt.plot(t, speed)
     plt.xlabel("Time in seconds")
