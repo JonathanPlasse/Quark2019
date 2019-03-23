@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QApplication)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QSlider, QLCDNumber, QVBoxLayout, QHBoxLayout, QApplication)
+from PyQt5.QtCore import Qt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import random
 import matplotlib
 
-matplotlib.use("Qt5Agg")
+matplotlib.use('Qt5Agg')
 
 
 class PidTuning(QWidget):
@@ -26,12 +27,45 @@ class PidTuning(QWidget):
         self.button = QPushButton('Plot')
         self.button.clicked.connect(self.plot)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.toolbar)
-        layout.addWidget(self.canvas)
-        layout.addWidget(self.button)
+        displayLayout = QVBoxLayout()
+        displayLayout.addWidget(self.toolbar)
+        displayLayout.addWidget(self.canvas)
+        displayLayout.addWidget(self.button)
 
-        self.setLayout(layout)
+        self.pLabel = QLabel('P')
+        self.pSlider = QSlider(Qt.Horizontal)
+        self.pLcd = QLCDNumber()
+
+        self.pSlider.valueChanged.connect(self.pLcd.display)
+        self.pSlider.sliderReleased.connect(self.plot)
+
+        pLayout = QHBoxLayout()
+        pLayout.addWidget(self.pLabel)
+        pLayout.addWidget(self.pSlider)
+        pLayout.addWidget(self.pLcd)
+
+        self.iLabel = QLabel('I')
+        self.iSlider = QSlider(Qt.Horizontal)
+        self.iLcd = QLCDNumber()
+
+        self.iSlider.valueChanged.connect(self.iLcd.display)
+        self.iSlider.sliderReleased.connect(self.plot)
+
+        iLayout = QHBoxLayout()
+        iLayout.addWidget(self.iLabel)
+        iLayout.addWidget(self.iSlider)
+        iLayout.addWidget(self.iLcd)
+
+        controlLayout = QVBoxLayout()
+        controlLayout.addLayout(pLayout)
+        controlLayout.addLayout(iLayout)
+        controlLayout.addStretch()
+
+        mainLayout = QHBoxLayout()
+        mainLayout.addLayout(controlLayout)
+        mainLayout.addLayout(displayLayout)
+
+        self.setLayout(mainLayout)
 
     def plot(self):
         data1 = [random.random() for i in range(10)]
