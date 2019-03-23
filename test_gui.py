@@ -2,16 +2,22 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QSlider, QLCDNumber, QVBoxLayout, QHBoxLayout, QApplication)
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
-import random
 import matplotlib
+from scipy.optimize import leastsq
+import control as cnt
+import numpy as np
 
 matplotlib.use('Qt5Agg')
 
+def f(t, k, tau):
+    return k * (1 - np.exp(-t / tau))
+
+def residual(p, t, speed):
+    return speed - f(t, *p)
 
 class PidTuning(QWidget):
     def __init__(self):
@@ -33,33 +39,26 @@ class PidTuning(QWidget):
         displayLayout.addWidget(self.button)
 
         self.pLabel = QLabel('P')
-        self.pSlider = QSlider(Qt.Horizontal)
-        self.pLcd = QLCDNumber()
-
-        self.pSlider.valueChanged.connect(self.pLcd.display)
-        self.pSlider.sliderReleased.connect(self.plot)
+        self.pSpinBox = QSpinBox()
+        self.pSpinBox.setMaximum(10000)
 
         pLayout = QHBoxLayout()
         pLayout.addWidget(self.pLabel)
-        pLayout.addWidget(self.pSlider)
-        pLayout.addWidget(self.pLcd)
+        pLayout.addWidget(self.pSpinBox)
 
         self.iLabel = QLabel('I')
-        self.iSlider = QSlider(Qt.Horizontal)
-        self.iLcd = QLCDNumber()
-
-        self.iSlider.valueChanged.connect(self.iLcd.display)
-        self.iSlider.sliderReleased.connect(self.plot)
+        self.iSpinBox = QSpinBox()
+        self.iSpinBox.setMaximum(10000)
 
         iLayout = QHBoxLayout()
         iLayout.addWidget(self.iLabel)
-        iLayout.addWidget(self.iSlider)
-        iLayout.addWidget(self.iLcd)
+        iLayout.addWidget(self.iSpinBox)
 
         controlLayout = QVBoxLayout()
+        controlLayout.addStretch(1)
         controlLayout.addLayout(pLayout)
         controlLayout.addLayout(iLayout)
-        controlLayout.addStretch()
+        controlLayout.addStretch(2)
 
         mainLayout = QHBoxLayout()
         mainLayout.addLayout(controlLayout)
@@ -68,20 +67,51 @@ class PidTuning(QWidget):
         self.setLayout(mainLayout)
 
     def plot(self):
-        data1 = [random.random() for i in range(10)]
-        data2 = [random.random() for i in range(10)]
+        speed = np.loadtxt('speed1.csv')
+
+        p0 = np.ones(2)
+
+        t = np.array([0.01 * i for i in range(100)])
+
+        p, _ = leastsq(residual, p0, args=(t, speed))
+
+        k1, tau1 = p
+
+        nbStep = 1633
+        pwm = 220
+        Ts = 0.01
+        kp = 46.2
+        ki = 752
+
+        c = cnt.tf([kp, ki*Ts-kp], [1, -1], Ts)
+
+        gd = cnt.tf(k1 / nbStep / pwm, [tau1, 1]).sample(Ts)
+
+        y = cnt.feedback(c*gd)
+        u = cnt.feedback(c, gd)
+
+        t = [0.01 * i for i in range(100)]
+
+        _, stepY = cnt.step_response(y, t)
+        _, stepU = cnt.step_response(u, t)
 
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(121)
-        ax1.set_title('Plot 1')
-        ax1.plot(data1, label='1')
-        ax1.legend()
+        olAx = self.figure.add_subplot(131)
+        olAx.plot(t, speed, label='real speed')
+        olAx.plot(t, f(t, *p), label='model speed')
+        olAx.set_title('Open-loop')
+        olAx.legend()
 
-        ax2 = self.figure.add_subplot(122)
-        ax2.set_title('Plot 2')
-        ax2.plot(data2, label='2')
-        ax2.legend()
+        yAx = self.figure.add_subplot(132)
+        yAx.plot(t, stepY[0], label='Y')
+        yAx.set_title('Y response')
+        yAx.legend()
+
+        uAx = self.figure.add_subplot(133)
+        uAx.plot(t, stepU[0], label='U')
+        uAx.set_title('U response')
+        uAx.legend()
 
         self.canvas.draw()
 
