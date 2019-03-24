@@ -4,7 +4,7 @@
 import sys
 from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QLabel, QSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+# from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import matplotlib
 from scipy.optimize import leastsq
@@ -37,7 +37,7 @@ class PidTuning(QWidget):
 
         p0 = np.ones(2)
 
-        self.t = np.array([self.Ts * i for i in range(100)])
+        self.t = np.array([self.Ts * i for i in range(len(self.speed))])
 
         p, _ = leastsq(residual, p0, args=(self.t, self.speed))
         self.k, self.tau = p
@@ -77,13 +77,13 @@ class PidTuning(QWidget):
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        # self.toolbar = NavigationToolbar(self.canvas, self)
 
         self.button = QPushButton('Plot')
         self.button.clicked.connect(self.plot)
 
         displayLayout = QVBoxLayout()
-        displayLayout.addWidget(self.toolbar)
+        # displayLayout.addWidget(self.toolbar)
         displayLayout.addWidget(self.canvas)
         displayLayout.addWidget(self.button)
 
