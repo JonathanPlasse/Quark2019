@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton, QLabel, QSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
+from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QLabel, QSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -32,8 +32,7 @@ class PidTuning(QWidget):
         self.Ts = 0.01
         self.kp = 46
         self.ki = 752
-        self.fileName = 'speed1.csv'
-
+        self.fileName = QFileDialog.getOpenFileName(self, 'Choose speed csv file', '.', 'CSV files (*.csv)')[0]
         self.speed = np.loadtxt(self.fileName)
 
         p0 = np.ones(2)
@@ -50,8 +49,6 @@ class PidTuning(QWidget):
         self.ki = newKi
 
     def initUI(self):
-        # self.fileLabel =
-
         self.pLabel = QLabel('P')
         self.pSpinBox = QSpinBox()
         self.pSpinBox.setMaximum(10000)
@@ -73,10 +70,10 @@ class PidTuning(QWidget):
         iLayout.addWidget(self.iSpinBox)
 
         controlLayout = QVBoxLayout()
-        controlLayout.addStretch(1)
+        controlLayout.addStretch()
         controlLayout.addLayout(pLayout)
         controlLayout.addLayout(iLayout)
-        controlLayout.addStretch(2)
+        controlLayout.addStretch()
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
