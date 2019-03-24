@@ -32,8 +32,9 @@ class PidTuning(QWidget):
         self.Ts = 0.01
         self.kp = 46
         self.ki = 752
+        self.fileName = 'speed1.csv'
 
-        self.speed = np.loadtxt('speed1.csv')
+        self.speed = np.loadtxt(self.fileName)
 
         p0 = np.ones(2)
 
@@ -49,17 +50,7 @@ class PidTuning(QWidget):
         self.ki = newKi
 
     def initUI(self):
-        self.figure = Figure()
-        self.canvas = FigureCanvas(self.figure)
-        self.toolbar = NavigationToolbar(self.canvas, self)
-
-        self.button = QPushButton('Plot')
-        self.button.clicked.connect(self.plot)
-
-        displayLayout = QVBoxLayout()
-        displayLayout.addWidget(self.toolbar)
-        displayLayout.addWidget(self.canvas)
-        displayLayout.addWidget(self.button)
+        # self.fileLabel =
 
         self.pLabel = QLabel('P')
         self.pSpinBox = QSpinBox()
@@ -86,6 +77,18 @@ class PidTuning(QWidget):
         controlLayout.addLayout(pLayout)
         controlLayout.addLayout(iLayout)
         controlLayout.addStretch(2)
+
+        self.figure = Figure()
+        self.canvas = FigureCanvas(self.figure)
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        self.button = QPushButton('Plot')
+        self.button.clicked.connect(self.plot)
+
+        displayLayout = QVBoxLayout()
+        displayLayout.addWidget(self.toolbar)
+        displayLayout.addWidget(self.canvas)
+        displayLayout.addWidget(self.button)
 
         mainLayout = QHBoxLayout()
         mainLayout.addLayout(controlLayout)
@@ -129,7 +132,6 @@ class PidTuning(QWidget):
 
 
 if __name__ == '__main__':
-
     app = QApplication(sys.argv)
     pt = PidTuning()
     pt.show()
