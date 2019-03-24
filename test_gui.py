@@ -42,6 +42,12 @@ class PidTuning(QWidget):
         p, _ = leastsq(residual, p0, args=(self.t, self.speed))
         self.k, self.tau = p
 
+    def setKp(self, newKp):
+        self.kp = newKp
+
+    def setKi(self, newKi):
+        self.ki = newKi
+
     def initUI(self):
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
@@ -59,6 +65,7 @@ class PidTuning(QWidget):
         self.pSpinBox = QSpinBox()
         self.pSpinBox.setMaximum(10000)
         self.pSpinBox.setValue(self.kp)
+        self.pSpinBox.valueChanged.connect(self.setKp)
 
         pLayout = QHBoxLayout()
         pLayout.addWidget(self.pLabel)
@@ -68,6 +75,7 @@ class PidTuning(QWidget):
         self.iSpinBox = QSpinBox()
         self.iSpinBox.setMaximum(10000)
         self.iSpinBox.setValue(self.ki)
+        self.iSpinBox.valueChanged.connect(self.setKi)
 
         iLayout = QHBoxLayout()
         iLayout.addWidget(self.iLabel)
