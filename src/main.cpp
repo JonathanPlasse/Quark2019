@@ -37,8 +37,8 @@ void setup() {
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
   Serial.begin(115200);
-  m1.setSpeed(1633);
-  m2.setSpeed(1633);
+  m1.setSpeed(1633*1.7);
+  m2.setSpeed(1633*1.7);
   temps = millis() - SAMPLE_TIME;
 }
 
