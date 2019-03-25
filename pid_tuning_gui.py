@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QLabel, QSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
+from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QLabel, QDoubleSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 # from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -30,8 +30,8 @@ class PidTuning(QWidget):
         self.nbStep = 1633
         self.pwm = 220
         self.Ts = 0.01
-        self.kp = 46
-        self.ki = 752
+        self.kp = 0.034467
+        self.ki = 0.35558
         self.fileName = QFileDialog.getOpenFileName(self, 'Choose speed csv file', '.', 'CSV files (*.csv)')[0]
         self.speed = np.loadtxt(self.fileName)
 
@@ -50,7 +50,7 @@ class PidTuning(QWidget):
 
     def initUI(self):
         self.pLabel = QLabel('P')
-        self.pSpinBox = QSpinBox()
+        self.pSpinBox = QDoubleSpinBox()
         self.pSpinBox.setMaximum(10000)
         self.pSpinBox.setValue(self.kp)
         self.pSpinBox.valueChanged.connect(self.setKp)
@@ -60,7 +60,7 @@ class PidTuning(QWidget):
         pLayout.addWidget(self.pSpinBox)
 
         self.iLabel = QLabel('I')
-        self.iSpinBox = QSpinBox()
+        self.iSpinBox = QDoubleSpinBox()
         self.iSpinBox.setMaximum(10000)
         self.iSpinBox.setValue(self.ki)
         self.iSpinBox.valueChanged.connect(self.setKi)
@@ -96,7 +96,7 @@ class PidTuning(QWidget):
     def computeResponse(self):
         c = cnt.tf([self.kp, self.ki*self.Ts-self.kp], [1, -1], self.Ts)
 
-        gd = cnt.tf(self.k / self.nbStep / self.pwm, [self.tau, 1]).sample(self.Ts)
+        gd = cnt.tf(self.k / self.pwm, [self.tau, 1]).sample(self.Ts)
 
         y = cnt.feedback(c*gd)
         u = cnt.feedback(c, gd)
