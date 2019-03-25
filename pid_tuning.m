@@ -6,7 +6,7 @@ tau2 = 0.164;
 nbStep = 1633;
 pwm = 220;
 
-Ts = 0.01;
+Ts = 0.005;
 
 g1 = tf(k1, [tau1 1]) / pwm;
 g2 = tf(k2, [tau2 1]) / pwm;
