@@ -19,13 +19,16 @@
 #define ENC2_PIN2 5
 
 //Asserevissement
-#define SAMPLE_TIME 10
-#define KP 222
-#define KI 1889
-#define KD 0.
+#define SAMPLE_TIME 5
+#define M1_KP 0.034274
+#define M1_KI 0.39104
+#define M1_KD 0.
+#define M2_KP 0.034467
+#define M2_KI 0.35558
+#define M2_KD 0.
 
-Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, KP, KI, KD);
-Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2, SAMPLE_TIME, KP, KI, KD);
+Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, M1_KP, M1_KI, M1_KD);
+Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2, SAMPLE_TIME, M2_KP, M2_KI, M2_KD);
 
 uint32_t temps;
 
