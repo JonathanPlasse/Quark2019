@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton, QDoubleSpinBox, QSpinBox, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QApplication)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QDoubleSpinBox, QSpinBox, QLineEdit, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -36,6 +36,21 @@ class ModelMotor(QWidget):
     def setPwm(self, newPwm):
         self.pwm = newPwm
 
+    def setTs(self, newTs):
+        self.ts = newTs
+
+    def setNbMeasure(self, newNbMeasure):
+        self.nbMeasure = newNbMeasure
+
+    def setNbSample(self, newNbSample):
+        self.nbSample = newNbSample
+
+    def setWaitTime(self, newWaitTime):
+        self.waitTime = newWaitTime
+
+    def setFileName(self, newFileName):
+        self.fileName = newFileName
+
     def initUI(self):
         self.pwmSpinBox = QSpinBox()
         self.pwmSpinBox.setMinimum(0)
@@ -46,21 +61,42 @@ class ModelMotor(QWidget):
         self.tsSpinBox = QDoubleSpinBox()
         self.tsSpinBox.setMinimum(0)
         self.tsSpinBox.setMaximum(1)
-        self.tsSpinBox.setStep(1)
-        self.tsSpinBox.setValue(self.pwm)
-        self.tsSpinBox.valueChanged.connect(self.setPwm)
+        self.tsSpinBox.setStep(0.001)
+        self.tsSpinBox.setValue(self.ts)
+        self.tsSpinBox.valueChanged.connect(self.setTs)
 
-        self.iSpinBox = QDoubleSpinBox()
-        self.iSpinBox.setMaximum(10000)
-        self.iSpinBox.setValue(self.ki)
-        self.iSpinBox.valueChanged.connect(self.setKi)
+        self.nbMeasureSpinBox = QSpinBox()
+        self.nbMeasureSpinBox.setMinimum(1)
+        self.nbMeasureSpinBox.setMaximum(100)
+        self.nbMeasureSpinBox.setValue(self.nbMeasure)
+        self.nbMeasureSpinBox.valueChanged.connect(self.setNbMeasure)
 
-        controlLayout = QFormLayout()
-        controlLayout.addRow('P', self.pSpinBox)
-        controlLayout.addRow('I', self.iSpinBox)
+        self.nbSampleSpinBox = QSpinBox()
+        self.nbSampleSpinBox.setMinimum(10)
+        self.nbSampleSpinBox.setMaximum(1000)
+        self.nbSampleSpinBox.setValue(self.nbSample)
+        self.nbSampleSpinBox.valueChanged.connect(self.setNbSample)
 
-        controlGroupBox = QGroupBox('Control parameters')
-        controlGroupBox.setLayout(controlLayout)
+        self.waitTimeSpinBox = QSpinBox()
+        self.waitTimeSpinBox.setMinimum(100)
+        self.waitTimeSpinBox.setMaximum(10000)
+        self.waitTimeSpinBox.setValue(self.waitTime)
+        self.waitTimeSpinBox.valueChanged.connect(self.setWaitTime)
+
+        self.fileNameLineEdit = QLineEdit()
+        self.fileNameLineEdit.setText(self.fileName)
+        self.fileNameLineEdit.textChanged.connect(self.setFileName)
+
+        parametersLayout = QFormLayout()
+        parametersLayout.addRow('PWM', self.pwmSpinBox)
+        parametersLayout.addRow('Sample Time', self.tsSpinBox)
+        parametersLayout.addRow('Number of Measure', self.nbMeasureSpinBox)
+        parametersLayout.addRow('Number of Sample', self.nbSampleSpinBox)
+        parametersLayout.addRow('Wait Time', self.waitTimeSpinBox)
+        parametersLayout.addRow('File Name', self.fileNameLineEdit)
+
+        controlGroupBox = QGroupBox('Measure parameters')
+        controlGroupBox.setLayout(parametersLayout)
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
