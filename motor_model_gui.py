@@ -31,7 +31,7 @@ class MotorModel(QWidget):
         self.nbMeasure = 10
         self.nbSample = 200
         self.waitTime = 1000
-        self.fileName = 'speed.csv'
+        self.fileName = 'speed1.csv'
 
     def setPwm(self, newPwm):
         self.pwm = newPwm
@@ -117,7 +117,7 @@ class MotorModel(QWidget):
         self.setLayout(mainLayout)
 
     def runStepResponse(self):
-        pass
+        self.speed = np.loadtxt(self.fileName)
 
     def computeRegression(self):
         p0 = np.ones(2)
