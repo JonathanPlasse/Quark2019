@@ -20,7 +20,7 @@
 #define ENC2_PIN2 5
 
 //Asserevissement
-#define SAMPLE_TIME 10
+#define SAMPLE_TIME 5
 #define KP 0
 #define KI 0
 #define KD 0

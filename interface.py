@@ -43,10 +43,11 @@ if __name__ == '__main__':
     portName = '/dev/ttyACM0'
     baudRate = 115200
 
-    nbMeasure = 10
+    nbMeasure = 5
     nbSample = 100
     waitTime = 1000
     pwm = 220
+    Ts = 0.005
 
     # Define the format of the structure of data sent
     structFormatConfig = ['uint8', 'uint16', 'uint16', 'uint8']
@@ -63,12 +64,13 @@ if __name__ == '__main__':
         writeData(ser, structFormatConfig, [nbMeasure, nbSample, waitTime, pwm])
         print(readData(ser, structFormatConfig))
         for i in range(nbMeasure):
-            print(i+1, '/', nbMeasure)
+            print(i, '/', nbMeasure)
             for j in range(nbSample):
                 timestamps[i, j], positions[i, j], speeds[i, j] = readData(ser, structFormatMeasure)
+        print(nbMeasure, '/', nbMeasure)
 
     speed = np.mean(speeds, axis=0)
-    t = [i*0.01 for i in range(len(speed))]
+    t = [i*Ts for i in range(len(speed))]
 
     plt.plot(t, speed)
     plt.xlabel("Time in seconds")

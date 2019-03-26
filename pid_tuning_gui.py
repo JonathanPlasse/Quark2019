@@ -4,7 +4,7 @@
 import sys
 from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QLabel, QDoubleSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-# from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 import matplotlib
 from scipy.optimize import leastsq
@@ -29,7 +29,7 @@ class PidTuning(QWidget):
     def initControl(self):
         self.nbStep = 1633
         self.pwm = 220
-        self.Ts = 0.01
+        self.Ts = 0.005
         self.kp = 0.034467
         self.ki = 0.35558
         self.fileName = QFileDialog.getOpenFileName(self, 'Choose speed csv file', '.', 'CSV files (*.csv)')[0]
@@ -77,13 +77,13 @@ class PidTuning(QWidget):
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
-        # self.toolbar = NavigationToolbar(self.canvas, self)
+        self.toolbar = NavigationToolbar(self.canvas, self)
 
         self.button = QPushButton('Plot')
         self.button.clicked.connect(self.plot)
 
         displayLayout = QVBoxLayout()
-        # displayLayout.addWidget(self.toolbar)
+        displayLayout.addWidget(self.toolbar)
         displayLayout.addWidget(self.canvas)
         displayLayout.addWidget(self.button)
 
