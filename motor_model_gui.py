@@ -18,7 +18,7 @@ def f(t, k, tau):
 def residual(p, t, speed):
     return speed - f(t, *p)
 
-class ModelMotor(QWidget):
+class MotorModel(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -143,6 +143,6 @@ class ModelMotor(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    mm = ModelMotor()
+    mm = MotorModel()
     mm.show()
     sys.exit(app.exec_())
