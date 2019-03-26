@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QLabel, QDoubleSpinBox, QVBoxLayout, QHBoxLayout, QApplication)
+from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QDoubleSpinBox, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -49,31 +49,22 @@ class PidTuning(QWidget):
         self.ki = newKi
 
     def initUI(self):
-        self.pLabel = QLabel('P')
         self.pSpinBox = QDoubleSpinBox()
         self.pSpinBox.setMaximum(10000)
         self.pSpinBox.setValue(self.kp)
         self.pSpinBox.valueChanged.connect(self.setKp)
 
-        pLayout = QHBoxLayout()
-        pLayout.addWidget(self.pLabel)
-        pLayout.addWidget(self.pSpinBox)
-
-        self.iLabel = QLabel('I')
         self.iSpinBox = QDoubleSpinBox()
         self.iSpinBox.setMaximum(10000)
         self.iSpinBox.setValue(self.ki)
         self.iSpinBox.valueChanged.connect(self.setKi)
 
-        iLayout = QHBoxLayout()
-        iLayout.addWidget(self.iLabel)
-        iLayout.addWidget(self.iSpinBox)
+        controlLayout = QFormLayout()
+        controlLayout.addRow('P', self.pSpinBox)
+        controlLayout.addRow('I', self.iSpinBox)
 
-        controlLayout = QVBoxLayout()
-        controlLayout.addStretch()
-        controlLayout.addLayout(pLayout)
-        controlLayout.addLayout(iLayout)
-        controlLayout.addStretch()
+        controlGroupBox = QGroupBox('Control parameters')
+        controlGroupBox.setLayout(controlLayout)
 
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
@@ -88,7 +79,7 @@ class PidTuning(QWidget):
         displayLayout.addWidget(self.button)
 
         mainLayout = QHBoxLayout()
-        mainLayout.addLayout(controlLayout)
+        mainLayout.addWidget(controlGroupBox)
         mainLayout.addLayout(displayLayout)
 
         self.setLayout(mainLayout)
