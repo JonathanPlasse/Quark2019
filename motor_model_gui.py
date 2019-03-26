@@ -29,7 +29,7 @@ class MotorModel(QWidget):
         self.pwm = 220
         self.ts = 0.005
         self.nbMeasure = 10
-        self.nbSample = 200
+        self.nbSample = 100
         self.waitTime = 1000
         self.fileName = 'speed1.csv'
 
@@ -52,6 +52,8 @@ class MotorModel(QWidget):
         self.fileName = newFileName
 
     def initUI(self):
+
+        # Parameters
         self.pwmSpinBox = QSpinBox()
         self.pwmSpinBox.setMinimum(0)
         self.pwmSpinBox.setMaximum(255)
@@ -61,7 +63,7 @@ class MotorModel(QWidget):
         self.tsSpinBox = QDoubleSpinBox()
         self.tsSpinBox.setMinimum(0)
         self.tsSpinBox.setMaximum(1)
-        self.tsSpinBox.setStep(0.001)
+        self.tsSpinBox.setSingleStep(0.001)
         self.tsSpinBox.setValue(self.ts)
         self.tsSpinBox.valueChanged.connect(self.setTs)
 
@@ -95,42 +97,44 @@ class MotorModel(QWidget):
         parametersLayout.addRow('Wait Time', self.waitTimeSpinBox)
         parametersLayout.addRow('File Name', self.fileNameLineEdit)
 
-        controlGroupBox = QGroupBox('Measure parameters')
-        controlGroupBox.setLayout(parametersLayout)
+        parametersGroupBox = QGroupBox('Measure parameters')
+        parametersGroupBox.setLayout(parametersLayout)
 
+        # Display
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 
-        self.button = QPushButton('Plot')
-        self.button.clicked.connect(self.plot)
+        self.button = QPushButton('Run')
+        self.button.clicked.connect(self.runStepResponse)
 
         displayLayout = QVBoxLayout()
         displayLayout.addWidget(self.toolbar)
         displayLayout.addWidget(self.canvas)
         displayLayout.addWidget(self.button)
 
+        # Main
         mainLayout = QHBoxLayout()
-        mainLayout.addWidget(controlGroupBox)
+        mainLayout.addWidget(parametersGroupBox)
         mainLayout.addLayout(displayLayout)
 
         self.setLayout(mainLayout)
 
     def runStepResponse(self):
         self.speed = np.loadtxt(self.fileName)
+        self.computeRegression()
+        self.plot()
 
     def computeRegression(self):
         p0 = np.ones(2)
 
-        self.t = np.array([self.Ts * i for i in range(self.nbSample)])
+        self.t = np.arange(0, self.ts * self.nbSample, self.ts)
 
         p, _ = leastsq(residual, p0, args=(self.t, self.speed))
         self.k, self.tau = p
 
     def plot(self):
         self.figure.clear()
-
-        self.computeResponse()
 
         ax = self.figure.add_subplot(111)
         ax.plot(self.t, self.speed, label='real speed')
