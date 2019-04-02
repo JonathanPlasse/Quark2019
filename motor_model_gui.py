@@ -2,9 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton, QDoubleSpinBox, QSpinBox, QLineEdit, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QApplication)
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from PyQt5.QtWidgets import (QWidget, QPushButton, QDoubleSpinBox, QSpinBox,
+                             QLineEdit, QVBoxLayout, QHBoxLayout, QFormLayout,
+                             QGroupBox, QApplication)
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg\
+                                        as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT\
+                                        as NavigationToolbar
 from matplotlib.figure import Figure
 import matplotlib
 from scipy.optimize import leastsq
@@ -12,11 +16,14 @@ import numpy as np
 
 matplotlib.use('Qt5Agg')
 
+
 def f(t, k, tau):
     return k * (1 - np.exp(-t / tau))
 
+
 def residual(p, t, speed):
     return speed - f(t, *p)
+
 
 class MotorModel(QWidget):
     def __init__(self):
