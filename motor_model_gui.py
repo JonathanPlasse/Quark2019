@@ -30,7 +30,6 @@ def residual(p, t, speed):
 class MotorModel(QWidget):
     def __init__(self):
         super().__init__()
-        self.connected = False
         self.init_parameters()
         self.init_ui()
 
@@ -136,9 +135,7 @@ class MotorModel(QWidget):
 
     def get_step_response(self):
         """run the step response and get the measures"""
-        if not self.connected:
-            self.bser = BinSerial(self.port_name, self.baud_rate)
-            self.connected = True
+        bser = BinSerial(self.port_name, self.baud_rate)
 
         # Define the format of the structure of data sent
         structFormatConfig = ['uint8', 'uint16', 'uint16', 'uint8']
@@ -149,14 +146,14 @@ class MotorModel(QWidget):
         speeds = np.zeros((self.nb_measure, self.nb_sample))
 
         # Write some data to the arduino
-        self.bser.write(structFormatConfig, [self.nb_measure, self.nb_sample,
-                                             self.wait_time, self.pwm])
-        print(self.bser.read(structFormatConfig))
+        bser.write(structFormatConfig, [self.nb_measure, self.nb_sample,
+                                        self.wait_time, self.pwm])
+        print(bser.read(structFormatConfig))
         for i in range(self.nb_measure):
             print(i, '/', self.nb_measure)
             for j in range(self.nb_sample):
                 timestamps[i, j], positions[i, j], speeds[i, j]\
-                    = self.bser.read(structFormatMeasure)
+                    = bser.read(structFormatMeasure)
         print(self.nb_measure, '/', self.nb_measure)
 
         self.speed = np.mean(speeds, axis=0)
