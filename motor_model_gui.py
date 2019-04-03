@@ -74,6 +74,7 @@ class MotorModel(QWidget):
         self.ts_spin.setMinimum(0)
         self.ts_spin.setMaximum(1)
         self.ts_spin.setSingleStep(0.001)
+        self.ts_spin.setDecimals(3)
         self.ts_spin.setValue(self.ts)
         self.ts_spin.valueChanged.connect(self.set_ts)
 
