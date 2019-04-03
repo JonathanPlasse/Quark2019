@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <Encoder.h>
 #include "motor.hpp"
-#include "conversion.h"
 #include "binary_serial.hpp"
 
 //Moteur Gauche
@@ -49,6 +48,26 @@ Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2,
 uint32_t last_time, last_wait_time;
 uint16_t nb_measure_done, nb_sample_done;
 
+
+void step_response() {
+  if (nb_sample_done < config.nb_sample) {
+    measure.position = m1.getPosition();
+    measure.speed = m1.getActualSpeed();
+    write_data(&measure, sizeof(measure));
+    nb_sample_done++;
+  }
+  else if (nb_sample_done < config.nb_sample + config.wait_time / SAMPLE_TIME) {
+    m1.stop();
+    nb_sample_done++;
+  }
+  else if (nb_measure_done < config.nb_measure - 1) {
+    ++nb_measure_done;
+    nb_sample_done = 0;
+    m1.setPwm(config.pwm);
+  }
+}
+
+
 void setup() {
   /*Change the frequency of the pins 9, 10*/
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
@@ -65,27 +84,13 @@ void setup() {
   m1.setPwm(config.pwm);
 }
 
-
 void loop() {
   measure.timestamp = millis();
 
   if (measure.timestamp - last_time > SAMPLE_TIME) {
     last_time += SAMPLE_TIME;
     m1.computeSpeed();
-    if (nb_sample_done < config.nb_sample) {
-      measure.position = m1.getPosition();
-      measure.speed = m1.getActualSpeed();
-      write_data(&measure, sizeof(measure));
-      nb_sample_done++;
-    }
-    else if (nb_sample_done < config.nb_sample + config.wait_time / SAMPLE_TIME) {
-      m1.stop();
-      nb_sample_done++;
-    }
-    else if (nb_measure_done < config.nb_measure - 1) {
-      ++nb_measure_done;
-      nb_sample_done = 0;
-      m1.setPwm(config.pwm);
-    }
+
+    step_response();
   }
 }
