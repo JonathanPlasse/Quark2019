@@ -12,6 +12,7 @@ typesDict = {'char': 'c', 'bool': '?',
              'int64': 'l', 'uint64': 'L',
              'float': 'f'}
 
+
 def computeFormat(structFormat):
     """Compute the format string for struct.(pack/unpack)"""
     structTypes = '='
@@ -20,6 +21,7 @@ def computeFormat(structFormat):
         structTypes += typesDict[t]
 
     return structTypes
+
 
 def readData(ser, structFormat):
     structTypes = computeFormat(structFormat)
@@ -34,10 +36,12 @@ def readData(ser, structFormat):
     data = list(struct.unpack(structTypes, rawData))
     return data
 
+
 def writeData(ser, structFormat, data):
     structTypes = computeFormat(structFormat)
     rawData = struct.pack(structTypes, *data)
     ser.write(rawData)
+
 
 if __name__ == '__main__':
     portName = '/dev/ttyACM0'

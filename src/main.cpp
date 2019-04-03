@@ -25,14 +25,26 @@
 #define KI 0
 #define KD 0
 
-typedef struct {uint8_t nbMeasure; uint16_t nbSample; uint16_t waitTime; uint8_t pwm;} configStruct;
-typedef struct {uint32_t timestamp; uint32_t position; float speed;} measureStruct;
+typedef struct {
+  uint8_t nbMeasure;
+  uint16_t nbSample;
+  uint16_t waitTime;
+  uint8_t pwm
+} configStruct;
+
+typedef struct {
+  uint32_t timestamp;
+  uint32_t position;
+  float speed
+} measureStruct;
 
 configStruct config;
 measureStruct measure;
 
-Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, KP, KI, KD);
-Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2, SAMPLE_TIME, KP, KI, KD);
+Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2,
+         SAMPLE_TIME, KP, KI, KD);
+Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2,
+         SAMPLE_TIME, KP, KI, KD);
 
 uint32_t lastTime, lastWaitTime;
 uint16_t nbMeasureDone, nbSampleDone;
@@ -49,7 +61,6 @@ void setup() {
   nbSampleDone = 0;
 
   lastTime = millis();
-
 
   m1.setPwm(config.pwm);
 }
