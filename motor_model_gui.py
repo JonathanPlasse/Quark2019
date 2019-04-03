@@ -29,113 +29,113 @@ class MotorModel(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.initParameters()
-        self.initUI()
+        self.init_parameters()
+        self.init_ui()
 
-    def initParameters(self):
+    def init_parameters(self):
         self.pwm = 220
         self.ts = 0.005
-        self.nbMeasure = 10
-        self.nbSample = 100
-        self.waitTime = 1000
-        self.fileName = 'speed1.csv'
+        self.nb_measure = 10
+        self.nb_sample = 100
+        self.wait_time = 1000
+        self.file_name = 'speed1.csv'
 
-    def setPwm(self, newPwm):
-        self.pwm = newPwm
+    def set_pwm(self, new_pwm):
+        self.pwm = new_pwm
 
-    def setTs(self, newTs):
-        self.ts = newTs
+    def set_ts(self, new_ts):
+        self.ts = new_ts
 
-    def setNbMeasure(self, newNbMeasure):
-        self.nbMeasure = newNbMeasure
+    def set_nb_measure(self, new_nb_measure):
+        self.nb_measure = new_nb_measure
 
-    def setNbSample(self, newNbSample):
-        self.nbSample = newNbSample
+    def set_nb_sample(self, new_nb_sample):
+        self.nb_sample = new_nb_sample
 
-    def setWaitTime(self, newWaitTime):
-        self.waitTime = newWaitTime
+    def set_wait_time(self, new_wait_time):
+        self.wait_time = new_wait_time
 
-    def setFileName(self, newFileName):
-        self.fileName = newFileName
+    def set_file_name(self, new_file_name):
+        self.file_name = new_file_name
 
-    def initUI(self):
+    def init_ui(self):
 
         # Parameters
-        self.pwmSpinBox = QSpinBox()
-        self.pwmSpinBox.setMinimum(0)
-        self.pwmSpinBox.setMaximum(255)
-        self.pwmSpinBox.setValue(self.pwm)
-        self.pwmSpinBox.valueChanged.connect(self.setPwm)
+        self.pwm_spin = QSpinBox()
+        self.pwm_spin.setMinimum(0)
+        self.pwm_spin.setMaximum(255)
+        self.pwm_spin.setValue(self.pwm)
+        self.pwm_spin.valueChanged.connect(self.set_pwm)
 
-        self.tsSpinBox = QDoubleSpinBox()
-        self.tsSpinBox.setMinimum(0)
-        self.tsSpinBox.setMaximum(1)
-        self.tsSpinBox.setSingleStep(0.001)
-        self.tsSpinBox.setValue(self.ts)
-        self.tsSpinBox.valueChanged.connect(self.setTs)
+        self.ts_spin = QDoubleSpinBox()
+        self.ts_spin.setMinimum(0)
+        self.ts_spin.setMaximum(1)
+        self.ts_spin.setSingleStep(0.001)
+        self.ts_spin.setValue(self.ts)
+        self.ts_spin.valueChanged.connect(self.set_ts)
 
-        self.nbMeasureSpinBox = QSpinBox()
-        self.nbMeasureSpinBox.setMinimum(1)
-        self.nbMeasureSpinBox.setMaximum(100)
-        self.nbMeasureSpinBox.setValue(self.nbMeasure)
-        self.nbMeasureSpinBox.valueChanged.connect(self.setNbMeasure)
+        self.nb_measure_spin = QSpinBox()
+        self.nb_measure_spin.setMinimum(1)
+        self.nb_measure_spin.setMaximum(100)
+        self.nb_measure_spin.setValue(self.nb_measure)
+        self.nb_measure_spin.valueChanged.connect(self.set_nb_measure)
 
-        self.nbSampleSpinBox = QSpinBox()
-        self.nbSampleSpinBox.setMinimum(10)
-        self.nbSampleSpinBox.setMaximum(1000)
-        self.nbSampleSpinBox.setValue(self.nbSample)
-        self.nbSampleSpinBox.valueChanged.connect(self.setNbSample)
+        self.nb_sample_spin = QSpinBox()
+        self.nb_sample_spin.setMinimum(10)
+        self.nb_sample_spin.setMaximum(1000)
+        self.nb_sample_spin.setValue(self.nb_sample)
+        self.nb_sample_spin.valueChanged.connect(self.set_nb_sample)
 
-        self.waitTimeSpinBox = QSpinBox()
-        self.waitTimeSpinBox.setMinimum(100)
-        self.waitTimeSpinBox.setMaximum(10000)
-        self.waitTimeSpinBox.setValue(self.waitTime)
-        self.waitTimeSpinBox.valueChanged.connect(self.setWaitTime)
+        self.wait_time_spin = QSpinBox()
+        self.wait_time_spin.setMinimum(100)
+        self.wait_time_spin.setMaximum(10000)
+        self.wait_time_spin.setValue(self.wait_time)
+        self.wait_time_spin.valueChanged.connect(self.set_wait_time)
 
-        self.fileNameLineEdit = QLineEdit()
-        self.fileNameLineEdit.setText(self.fileName)
-        self.fileNameLineEdit.textChanged.connect(self.setFileName)
+        self.file_name_edit = QLineEdit()
+        self.file_name_edit.setText(self.file_name)
+        self.file_name_edit.textChanged.connect(self.set_file_name)
 
-        parametersLayout = QFormLayout()
-        parametersLayout.addRow('PWM', self.pwmSpinBox)
-        parametersLayout.addRow('Sample Time', self.tsSpinBox)
-        parametersLayout.addRow('Number of Measure', self.nbMeasureSpinBox)
-        parametersLayout.addRow('Number of Sample', self.nbSampleSpinBox)
-        parametersLayout.addRow('Wait Time', self.waitTimeSpinBox)
-        parametersLayout.addRow('File Name', self.fileNameLineEdit)
+        parameters_layout = QFormLayout()
+        parameters_layout.addRow('PWM', self.pwm_spin)
+        parameters_layout.addRow('Sample Time', self.ts_spin)
+        parameters_layout.addRow('Number of Measure', self.nb_measure_spin)
+        parameters_layout.addRow('Number of Sample', self.nb_sample_spin)
+        parameters_layout.addRow('Wait Time', self.wait_time_spin)
+        parameters_layout.addRow('File Name', self.file_name_edit)
 
-        parametersGroupBox = QGroupBox('Measure parameters')
-        parametersGroupBox.setLayout(parametersLayout)
+        parameters_group = QGroupBox('Measure parameters')
+        parameters_group.setLayout(parameters_layout)
 
         # Display
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
 
-        self.button = QPushButton('Run')
-        self.button.clicked.connect(self.runStepResponse)
+        self.run_button = QPushButton('Run')
+        self.run_button.clicked.connect(self.run_step_response)
 
-        displayLayout = QVBoxLayout()
-        displayLayout.addWidget(self.toolbar)
-        displayLayout.addWidget(self.canvas)
-        displayLayout.addWidget(self.button)
+        display_layout = QVBoxLayout()
+        display_layout.addWidget(self.toolbar)
+        display_layout.addWidget(self.canvas)
+        display_layout.addWidget(self.run_button)
 
         # Main
-        mainLayout = QHBoxLayout()
-        mainLayout.addWidget(parametersGroupBox)
-        mainLayout.addLayout(displayLayout)
+        main_layout = QHBoxLayout()
+        main_layout.addWidget(parameters_group)
+        main_layout.addLayout(display_layout)
 
-        self.setLayout(mainLayout)
+        self.setLayout(main_layout)
 
-    def runStepResponse(self):
-        self.speed = np.loadtxt(self.fileName)
-        self.computeRegression()
+    def run_step_response(self):
+        self.speed = np.loadtxt(self.file_name)
+        self.compute_regression()
         self.plot()
 
-    def computeRegression(self):
+    def compute_regression(self):
         p0 = np.ones(2)
 
-        self.t = np.arange(0, self.ts * self.nbSample, self.ts)
+        self.t = np.arange(0, self.ts * self.nb_sample, self.ts)
 
         p, _ = leastsq(residual, p0, args=(self.t, self.speed))
         self.k, self.tau = p
