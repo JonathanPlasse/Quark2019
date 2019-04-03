@@ -1,0 +1,16 @@
+# Port name of the serial port
+port_name: '/dev/ttyUSB0'
+# Baud rate of the serial connection
+baud_rate: 115200
+# PWM of the step
+pwm: 220
+# Time sample
+ts: 0.005
+# Number of step to run
+nb_measure: 10
+# Number of sample taken per step
+nb_sample: 100
+# Waiting time between each measures
+wait_time: 1000
+# File name of the measures
+file_name: 'speed1.csv'

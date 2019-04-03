@@ -13,6 +13,7 @@ from matplotlib.figure import Figure
 import matplotlib
 from scipy.optimize import leastsq
 import numpy as np
+import yaml
 
 matplotlib.use('Qt5Agg')
 
@@ -33,12 +34,14 @@ class MotorModel(QWidget):
         self.init_ui()
 
     def init_parameters(self):
-        self.pwm = 220
-        self.ts = 0.005
-        self.nb_measure = 10
-        self.nb_sample = 100
-        self.wait_time = 1000
-        self.file_name = 'speed1.csv'
+        with open('config.yml', 'r') as f:
+            config = yaml.load(f.read())
+        self.pwm = config['pwm']
+        self.ts = config['ts']
+        self.nb_measure = config['nb_measure']
+        self.nb_sample = config['nb_sample']
+        self.wait_time = config['wait_time']
+        self.file_name = config['file_name']
 
     def set_pwm(self, new_pwm):
         self.pwm = new_pwm
