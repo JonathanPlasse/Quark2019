@@ -9,10 +9,10 @@ public:
   PID(float* setpoint, float* input, float* output, float kp, float ki, float kd);
 
   //Set sample time
-  void setSampleTime(uint32_t sampleTime);
+  void set_sample_time(uint32_t sample_time);
 
   //Set min/max output
-  void setOutputLimit(float maxOutput);
+  void set_output_limit(float max_output);
 
   //Start the PID
   void start();
@@ -26,10 +26,10 @@ public:
 private:
   float *_setpoint, *_input, *_output;
   float _kp, _ki, _kd;
-  uint16_t _sampleTime;
-  float _maxOutput;
+  uint16_t _sample_time;
+  float _max_output;
   uint8_t _running;
-  float _lastInput, _integral, _derivative;
+  float _last_input, _integral, _derivative;
 };
 
 #endif

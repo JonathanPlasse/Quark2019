@@ -3,21 +3,21 @@
 
 PID::PID(float* setpoint, float* input, float* output, float kp, float ki, float kd) : _setpoint(setpoint), _input(input), _output(output), _kp(kp), _ki(ki), _kd(kd) {
   _running = 0;
-  _lastInput = 0;
+  _last_input = 0;
   _integral = 0;
-  _maxOutput = 255;
-  _sampleTime = 1;
+  _max_output = 255;
+  _sample_time = 1;
 }
 
-void PID::setSampleTime(uint32_t sampleTime) {
-  // float ratio = sampleTime / _sampleTime;
+void PID::set_sample_time(uint32_t sample_time) {
+  // float ratio = sample_time / _sample_time;
   // _ki *= ratio;
   // _kd /= ratio;
-  _sampleTime = sampleTime;
+  _sample_time = sample_time;
 }
 
-void PID::setOutputLimit(float maxOutput) {
-  _maxOutput = maxOutput;
+void PID::set_output_limit(float max_output) {
+  _max_output = max_output;
 }
 
 void PID::start() {
@@ -33,21 +33,21 @@ void PID::compute() {
     /*Compute all the working error variables*/
     float error = *_setpoint - *_input;
     _integral += error;
-    _derivative = *_input - _lastInput;
+    _derivative = *_input - _last_input;
 
     /*Compute PID Output*/
     *_output = _kp * error + _ki * _integral - _kd * _derivative;
 
-    if (*_output > _maxOutput) {
+    if (*_output > _max_output) {
       _integral -= error;
-      *_output = _maxOutput;
+      *_output = _max_output;
     }
-    else if (*_output < -_maxOutput) {
+    else if (*_output < -_max_output) {
       _integral -= error;
-      *_output = -_maxOutput;
+      *_output = -_max_output;
     }
 
     /*Remember some variables for next time*/
-    _lastInput = *_input;
+    _last_input = *_input;
   }
 }

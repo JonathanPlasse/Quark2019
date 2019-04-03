@@ -51,8 +51,8 @@ uint16_t nb_measure_done, nb_sample_done;
 
 void step_response() {
   if (nb_sample_done < config.nb_sample) {
-    measure.position = m1.getPosition();
-    measure.speed = m1.getActualSpeed();
+    measure.position = m1.get_position();
+    measure.speed = m1.get_actual_speed();
     write_data(&measure, sizeof(measure));
     nb_sample_done++;
   }
@@ -63,7 +63,7 @@ void step_response() {
   else if (nb_measure_done < config.nb_measure - 1) {
     ++nb_measure_done;
     nb_sample_done = 0;
-    m1.setPwm(config.pwm);
+    m1.set_pwm(config.pwm);
   }
 }
 
@@ -81,7 +81,7 @@ void setup() {
 
   last_time = millis();
 
-  m1.setPwm(config.pwm);
+  m1.set_pwm(config.pwm);
 }
 
 void loop() {
@@ -89,7 +89,7 @@ void loop() {
 
   if (measure.timestamp - last_time > SAMPLE_TIME) {
     last_time += SAMPLE_TIME;
-    m1.computeSpeed();
+    m1.compute_speed();
 
     step_response();
   }
