@@ -14,6 +14,7 @@ import matplotlib
 from scipy.optimize import leastsq
 import numpy as np
 import yaml
+from binserial import BinSerial
 
 matplotlib.use('Qt5Agg')
 
@@ -29,13 +30,15 @@ def residual(p, t, speed):
 class MotorModel(QWidget):
     def __init__(self):
         super().__init__()
-
+        self.connected = False
         self.init_parameters()
         self.init_ui()
 
     def init_parameters(self):
         with open('config.yml', 'r') as f:
             config = yaml.load(f.read())
+        self.port_name = config['port_name']
+        self.baud_rate = config['baud_rate']
         self.pwm = config['pwm']
         self.ts = config['ts']
         self.nb_measure = config['nb_measure']
@@ -131,8 +134,36 @@ class MotorModel(QWidget):
 
         self.setLayout(main_layout)
 
+    def get_step_response(self):
+        """run the step response and get the measures"""
+        if not self.connected:
+            self.bser = BinSerial(self.port_name, self.baud_rate)
+            self.connected = True
+
+        # Define the format of the structure of data sent
+        structFormatConfig = ['uint8', 'uint16', 'uint16', 'uint8']
+        structFormatMeasure = ['uint32', 'uint32', 'float']
+
+        timestamps = np.zeros((self.nb_measure, self.nb_sample))
+        positions = np.zeros((self.nb_measure, self.nb_sample))
+        speeds = np.zeros((self.nb_measure, self.nb_sample))
+
+        # Write some data to the arduino
+        self.bser.write(structFormatConfig, [self.nb_measure, self.nb_sample,
+                                             self.wait_time, self.pwm])
+        print(self.bser.read(structFormatConfig))
+        for i in range(self.nb_measure):
+            print(i, '/', self.nb_measure)
+            for j in range(self.nb_sample):
+                timestamps[i, j], positions[i, j], speeds[i, j]\
+                    = self.bser.read(structFormatMeasure)
+        print(self.nb_measure, '/', self.nb_measure)
+
+        self.speed = np.mean(speeds, axis=0)
+
     def run_step_response(self):
-        self.speed = np.loadtxt(self.file_name)
+        self.get_step_response()
+        # self.speed = np.loadtxt(self.file_name)
         self.compute_regression()
         self.plot()
 

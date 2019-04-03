@@ -1,5 +1,5 @@
 # Port name of the serial port
-port_name: '/dev/ttyUSB0'
+port_name: '/dev/ttyACM0'
 # Baud rate of the serial connection
 baud_rate: 115200
 # PWM of the step
