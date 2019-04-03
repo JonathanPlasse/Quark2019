@@ -3,8 +3,9 @@
 
 import sys
 from PyQt5.QtWidgets import (QWidget, QPushButton, QDoubleSpinBox, QSpinBox,
-                             QLineEdit, QVBoxLayout, QHBoxLayout, QFormLayout,
-                             QGroupBox, QApplication)
+                             QLineEdit, QProgressBar,
+                             QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
+                             QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg\
                                         as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT\
@@ -112,6 +113,10 @@ class MotorModel(QWidget):
 
         parameters_group = QGroupBox('Measure parameters')
         parameters_group.setLayout(parameters_layout)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setMaximum(self.nb_measure)
+        self.progress_bar.setValue(0)
 
         # Display
         self.figure = Figure()
