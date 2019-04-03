@@ -4,3 +4,4 @@ compiling_error.txt
 .piolibdeps
 .clang_complete
 .gcc-flags.json
+*.pyc
