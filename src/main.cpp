@@ -26,16 +26,16 @@
 #define KD 0
 
 typedef struct {
-  uint8_t nbMeasure;
-  uint16_t nbSample;
-  uint16_t waitTime;
-  uint8_t pwm
+  uint8_t nb_measure;
+  uint16_t nb_sample;
+  uint16_t wait_time;
+  uint8_t pwm;
 } configStruct;
 
 typedef struct {
   uint32_t timestamp;
   uint32_t position;
-  float speed
+  float speed;
 } measureStruct;
 
 configStruct config;
@@ -46,21 +46,21 @@ Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2,
 Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2,
          SAMPLE_TIME, KP, KI, KD);
 
-uint32_t lastTime, lastWaitTime;
-uint16_t nbMeasureDone, nbSampleDone;
+uint32_t last_time, last_wait_time;
+uint16_t nb_measure_done, nb_sample_done;
 
 void setup() {
   /*Change the frequency of the pins 9, 10*/
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
   Serial.begin(115200);
-  readData(&config, sizeof(configStruct));
-  writeData(&config, sizeof(configStruct));
+  read_data(&config, sizeof(config));
+  write_data(&config, sizeof(config));
 
-  nbMeasureDone = 0;
-  nbSampleDone = 0;
+  nb_measure_done = 0;
+  nb_sample_done = 0;
 
-  lastTime = millis();
+  last_time = millis();
 
   m1.setPwm(config.pwm);
 }
@@ -69,22 +69,22 @@ void setup() {
 void loop() {
   measure.timestamp = millis();
 
-  if (measure.timestamp - lastTime > SAMPLE_TIME) {
-    lastTime += SAMPLE_TIME;
+  if (measure.timestamp - last_time > SAMPLE_TIME) {
+    last_time += SAMPLE_TIME;
     m1.computeSpeed();
-    if (nbSampleDone < config.nbSample) {
+    if (nb_sample_done < config.nb_sample) {
       measure.position = m1.getPosition();
       measure.speed = m1.getActualSpeed();
-      writeData(&measure, sizeof(measureStruct));
-      nbSampleDone++;
+      write_data(&measure, sizeof(measure));
+      nb_sample_done++;
     }
-    else if (nbSampleDone < config.nbSample + config.waitTime / SAMPLE_TIME) {
+    else if (nb_sample_done < config.nb_sample + config.wait_time / SAMPLE_TIME) {
       m1.stop();
-      nbSampleDone++;
+      nb_sample_done++;
     }
-    else if (nbMeasureDone < config.nbMeasure - 1) {
-      ++nbMeasureDone;
-      nbSampleDone = 0;
+    else if (nb_measure_done < config.nb_measure - 1) {
+      ++nb_measure_done;
+      nb_sample_done = 0;
       m1.setPwm(config.pwm);
     }
   }

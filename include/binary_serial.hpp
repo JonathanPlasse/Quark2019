@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-void readData(void* data, size_t nbBytes);
-void writeData(void* data, size_t nbBytes);
+void read_data(void* data, size_t nb_bytes);
+void write_data(void* data, size_t nb_bytes);
 
 #endif

@@ -1,11 +1,11 @@
 #include "binary_serial.hpp"
 
-void readData(void* data, size_t nbBytes) {
-  while (Serial.available() < nbBytes);
-  Serial.readBytes((byte*) data, nbBytes);
+void read_data(void* data, size_t nb_bytes) {
+  while (Serial.available() < nb_bytes);
+  Serial.readBytes((byte*) data, nb_bytes);
 }
 
-void writeData(void* data, size_t nbBytes) {
-  byte* byteData = (byte*) data;
-  Serial.write(byteData, nbBytes);
+void write_data(void* data, size_t nb_bytes) {
+  byte* byte_data = (byte*) data;
+  Serial.write(byte_data, nb_bytes);
 }
