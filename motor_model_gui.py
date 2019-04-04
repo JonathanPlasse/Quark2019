@@ -125,12 +125,13 @@ class MotorModel(QWidget):
         caracteristics_layout.addRow('K', self.k_edit)
         caracteristics_layout.addRow('Tau', self.tau_edit)
 
-        caracteristics_group = QGroupBox('Measure parameters')
+        caracteristics_group = QGroupBox('Motor caracteristics')
         caracteristics_group.setLayout(caracteristics_layout)
 
         param_caract_layout = QVBoxLayout()
-        param_caract_layout.addLayout(caracteristics_group)
-        param_caract_layout.addLayout(parameters_group)
+        param_caract_layout.addWidget(parameters_group)
+        param_caract_layout.addWidget(caracteristics_group)
+        param_caract_layout.addStretch()
 
         # Display
         self.figure = Figure()
@@ -153,7 +154,7 @@ class MotorModel(QWidget):
 
         # Main
         main_layout = QHBoxLayout()
-        main_layout.addWidget(param_caract_layout)
+        main_layout.addLayout(param_caract_layout)
         main_layout.addLayout(display_layout)
 
         self.setLayout(main_layout)
@@ -186,6 +187,8 @@ class MotorModel(QWidget):
         self.get_step_response()
         # self.speed = np.loadtxt(self.file_name)
         self.compute_regression()
+        self.k_edit.setText(str(self.k))
+        self.tau_edit.setText(str(self.tau))
         self.plot()
 
     def compute_regression(self):
