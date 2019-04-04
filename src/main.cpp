@@ -74,7 +74,6 @@ void setup() {
 
   Serial.begin(115200);
   read_data(&config, sizeof(config));
-  write_data(&config, sizeof(config));
 
   nb_measure_done = 0;
   nb_sample_done = 0;

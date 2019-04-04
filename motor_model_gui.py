@@ -54,6 +54,7 @@ class MotorModel(QWidget):
 
     def set_nb_measure(self, new_nb_measure):
         self.nb_measure = new_nb_measure
+        self.progress_bar.setMaximum(self.nb_measure)
 
     def set_nb_sample(self, new_nb_sample):
         self.nb_sample = new_nb_sample
@@ -114,14 +115,15 @@ class MotorModel(QWidget):
         parameters_group = QGroupBox('Measure parameters')
         parameters_group.setLayout(parameters_layout)
 
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setMaximum(self.nb_measure)
-        self.progress_bar.setValue(0)
-
         # Display
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setMinimum(0)
+        self.progress_bar.setMaximum(self.nb_measure)
+        self.progress_bar.setValue(0)
 
         self.run_button = QPushButton('Run')
         self.run_button.clicked.connect(self.run_step_response)
@@ -129,6 +131,7 @@ class MotorModel(QWidget):
         display_layout = QVBoxLayout()
         display_layout.addWidget(self.toolbar)
         display_layout.addWidget(self.canvas)
+        display_layout.addWidget(self.progress_bar)
         display_layout.addWidget(self.run_button)
 
         # Main
@@ -153,7 +156,6 @@ class MotorModel(QWidget):
         # Write some data to the arduino
         bser.write(structFormatConfig, [self.nb_measure, self.nb_sample,
                                         self.wait_time, self.pwm])
-        print(bser.read(structFormatConfig))
         for i in range(self.nb_measure):
             print(i, '/', self.nb_measure)
             for j in range(self.nb_sample):
