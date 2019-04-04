@@ -157,11 +157,11 @@ class MotorModel(QWidget):
         bser.write(structFormatConfig, [self.nb_measure, self.nb_sample,
                                         self.wait_time, self.pwm])
         for i in range(self.nb_measure):
-            print(i, '/', self.nb_measure)
+            self.progress_bar.setValue(i)
             for j in range(self.nb_sample):
                 timestamps[i, j], positions[i, j], speeds[i, j]\
                     = bser.read(structFormatMeasure)
-        print(self.nb_measure, '/', self.nb_measure)
+        self.progress_bar.setValue(self.nb_measure)
 
         self.speed = np.mean(speeds, axis=0)
 
