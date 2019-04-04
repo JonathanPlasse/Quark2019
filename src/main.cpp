@@ -25,10 +25,11 @@
 #define KD 0
 
 typedef struct {
+  uint8_t pwm;
+  uint8_t ts;
   uint8_t nb_measure;
   uint16_t nb_sample;
   uint16_t wait_time;
-  uint8_t pwm;
 } configStruct;
 
 typedef struct {

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QPushButton, QDoubleSpinBox, QSpinBox,
-                             QLineEdit, QProgressBar,
+from PyQt5.QtWidgets import (QWidget, QPushButton,
+                             QSpinBox, QLineEdit, QProgressBar,
                              QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
                              QApplication)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg\
@@ -70,11 +70,9 @@ class MotorModel(QWidget):
         self.pwm_spin.setValue(self.pwm)
         self.pwm_spin.valueChanged.connect(self.set_pwm)
 
-        self.ts_spin = QDoubleSpinBox()
-        self.ts_spin.setMinimum(0)
-        self.ts_spin.setMaximum(1)
-        self.ts_spin.setSingleStep(0.001)
-        self.ts_spin.setDecimals(3)
+        self.ts_spin = QSpinBox()
+        self.ts_spin.setMinimum(1)
+        self.ts_spin.setMaximum(100)
         self.ts_spin.setValue(self.ts)
         self.ts_spin.valueChanged.connect(self.set_ts)
 
@@ -155,7 +153,7 @@ class MotorModel(QWidget):
         bser = BinSerial(self.port_name, self.baud_rate)
 
         # Define the format of the structure of data sent
-        structFormatConfig = ['uint8', 'uint16', 'uint16', 'uint8']
+        structFormatConfig = ['uint8', 'uint8', 'uint8', 'uint16', 'uint16']
         structFormatMeasure = ['uint32', 'uint32', 'float']
 
         timestamps = np.zeros((self.nb_measure, self.nb_sample))
@@ -163,8 +161,9 @@ class MotorModel(QWidget):
         speeds = np.zeros((self.nb_measure, self.nb_sample))
 
         # Write some data to the arduino
-        bser.write(structFormatConfig, [self.nb_measure, self.nb_sample,
-                                        self.wait_time, self.pwm])
+        bser.write(structFormatConfig, [
+            self.pwm, self.ts, self.nb_measure,
+            self.nb_sample, self.wait_time])
         for i in range(self.nb_measure):
             self.progress_bar.setValue(i)
             for j in range(self.nb_sample):
@@ -182,7 +181,7 @@ class MotorModel(QWidget):
         self.plot()
 
     def compute_regression(self):
-        p0 = np.ones(2)
+        p0 = np.array([1, 100])
 
         self.t = np.arange(0, self.ts * self.nb_sample, self.ts)
 
