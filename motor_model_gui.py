@@ -115,6 +115,23 @@ class MotorModel(QWidget):
         parameters_group = QGroupBox('Measure parameters')
         parameters_group.setLayout(parameters_layout)
 
+        self.k_edit = QLineEdit()
+        self.k_edit.setReadOnly(True)
+
+        self.tau_edit = QLineEdit()
+        self.tau_edit.setReadOnly(True)
+
+        caracteristics_layout = QFormLayout()
+        caracteristics_layout.addRow('K', self.k_edit)
+        caracteristics_layout.addRow('Tau', self.tau_edit)
+
+        caracteristics_group = QGroupBox('Measure parameters')
+        caracteristics_group.setLayout(caracteristics_layout)
+
+        param_caract_layout = QVBoxLayout()
+        param_caract_layout.addLayout(caracteristics_group)
+        param_caract_layout.addLayout(parameters_group)
+
         # Display
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
@@ -136,7 +153,7 @@ class MotorModel(QWidget):
 
         # Main
         main_layout = QHBoxLayout()
-        main_layout.addWidget(parameters_group)
+        main_layout.addWidget(param_caract_layout)
         main_layout.addLayout(display_layout)
 
         self.setLayout(main_layout)
