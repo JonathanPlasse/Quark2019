@@ -44,7 +44,6 @@ class MotorModel(QWidget):
         self.nb_measure = config['nb_measure']
         self.nb_sample = config['nb_sample']
         self.wait_time = config['wait_time']
-        self.file_name = config['file_name']
 
     def set_pwm(self, new_pwm):
         self.pwm = new_pwm
@@ -61,9 +60,6 @@ class MotorModel(QWidget):
 
     def set_wait_time(self, new_wait_time):
         self.wait_time = new_wait_time
-
-    def set_file_name(self, new_file_name):
-        self.file_name = new_file_name
 
     def init_ui(self):
 
@@ -100,17 +96,12 @@ class MotorModel(QWidget):
         self.wait_time_spin.setValue(self.wait_time)
         self.wait_time_spin.valueChanged.connect(self.set_wait_time)
 
-        self.file_name_edit = QLineEdit()
-        self.file_name_edit.setText(self.file_name)
-        self.file_name_edit.textChanged.connect(self.set_file_name)
-
         parameters_layout = QFormLayout()
         parameters_layout.addRow('PWM', self.pwm_spin)
         parameters_layout.addRow('Sample Time', self.ts_spin)
         parameters_layout.addRow('Number of Measure', self.nb_measure_spin)
         parameters_layout.addRow('Number of Sample', self.nb_sample_spin)
         parameters_layout.addRow('Wait Time', self.wait_time_spin)
-        parameters_layout.addRow('File Name', self.file_name_edit)
 
         parameters_group = QGroupBox('Measure parameters')
         parameters_group.setLayout(parameters_layout)
@@ -185,7 +176,6 @@ class MotorModel(QWidget):
 
     def run_step_response(self):
         self.get_step_response()
-        # self.speed = np.loadtxt(self.file_name)
         self.compute_regression()
         self.k_edit.setText(str(self.k))
         self.tau_edit.setText(str(self.tau))

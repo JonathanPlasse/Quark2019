@@ -12,5 +12,3 @@ nb_measure: 10
 nb_sample: 100
 # Waiting time between each measures
 wait_time: 1000
-# File name of the measures
-file_name: 'speed1.csv'
