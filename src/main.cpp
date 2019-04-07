@@ -50,21 +50,39 @@ uint32_t last_time, last_wait_time;
 uint16_t nb_measure_done, nb_sample_done;
 
 
-void step_response() {
-  if (nb_sample_done < config.nb_sample) {
-    measure.position = m1.get_position();
-    measure.speed = m1.get_actual_speed();
-    write_data(&measure, sizeof(measure));
-    nb_sample_done++;
-  }
-  else if (nb_sample_done < config.nb_sample + config.wait_time / SAMPLE_TIME) {
-    m1.stop();
-    nb_sample_done++;
-  }
-  else if (nb_measure_done < config.nb_measure - 1) {
-    ++nb_measure_done;
-    nb_sample_done = 0;
-    m1.set_pwm(config.pwm);
+void step_response(Motor* m) {
+  read_data(&config, sizeof(config));
+
+  nb_measure_done = 0;
+  nb_sample_done = 0;
+
+  last_time = millis();
+
+  m->set_pwm(config.pwm);
+
+  while (nb_measure_done < config.nb_measure) {
+    measure.timestamp = millis();
+
+    if (measure.timestamp - last_time > SAMPLE_TIME) {
+      last_time += SAMPLE_TIME;
+      m->compute_speed();
+
+      if (nb_sample_done < config.nb_sample) {
+        measure.position = m->get_position();
+        measure.speed = m->get_actual_speed();
+        write_data(&measure, sizeof(measure));
+        nb_sample_done++;
+      }
+      else if (nb_sample_done < config.nb_sample + config.wait_time / SAMPLE_TIME) {
+        m->stop();
+        nb_sample_done++;
+      }
+      else if (nb_measure_done < config.nb_measure - 1) {
+        nb_measure_done++;
+        nb_sample_done = 0;
+        m->set_pwm(config.pwm);
+      }
+    }
   }
 }
 
@@ -74,23 +92,10 @@ void setup() {
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
   Serial.begin(115200);
-  read_data(&config, sizeof(config));
 
-  nb_measure_done = 0;
-  nb_sample_done = 0;
+  step_response(&m1);
 
-  last_time = millis();
-
-  m1.set_pwm(config.pwm);
 }
 
 void loop() {
-  measure.timestamp = millis();
-
-  if (measure.timestamp - last_time > SAMPLE_TIME) {
-    last_time += SAMPLE_TIME;
-    m1.compute_speed();
-
-    step_response();
-  }
 }
