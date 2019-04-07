@@ -189,6 +189,7 @@ class MotorModel(QWidget):
         self.k, self.tau = p
 
     def plot(self):
+        """Plot step response"""
         self.figure.clear()
 
         ax = self.figure.add_subplot(111)
