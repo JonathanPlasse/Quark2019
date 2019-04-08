@@ -2,50 +2,21 @@
 #define MOTOR_HPP
 
 #include <stdint.h>
-#include <Encoder.h>
-#include "pid.hpp"
 
 class Motor {
 public:
-  //Initialisation of the Motor class
-  Motor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, uint8_t encPin1, uint8_t encPin2, uint16_t sampleTime, float kp, float ki, float kd);
+  // Initialisation of the Motor class
+  Motor(uint8_t dir_pin1, uint8_t dir_pin2, uint8_t pwm_pin);
 
-  //Get the pwm sent to the H bridge
-  int16_t getPwm() const;
+  // Get the pwm sent to the H bridge
+  int16_t get_pwm() const;
 
-  //Set the pwm sent to the H bridge
-  void setPwm(int16_t pwm);
-
-  //Get the position of the motor in steps
-  int32_t getPosition() const;
-
-  //Get the target speed of the motor in steps/seconds
-  float getTargetSpeed() const;
-
-  //Get the speed of the motor in step/seconds
-  float getActualSpeed() const;
-
-  //Set the speed of the motor in steps/seconds
-  void setSpeed(float speed);
-
-  //Run the control system of the speed
-  //To call every sample time
-  void run();
-
-  //Stop the motor and the control system
-  void stop();
+  // Set the pwm sent to the H bridge
+  void set_pwm(int16_t pwm);
 
 private:
-  Encoder _enc;
-  uint8_t _dirPin1, _dirPin2, _pwmPin;
+  uint8_t _dir_pin1, _dir_pin2, _pwm_pin;
   float _pwm;
-  int32_t _position, _lastPosition;
-  float _targetSpeed;
-  float _actualSpeed;
-  uint16_t _sampleTime;
-
-public:
-  PID _pid;
 };
 
 #endif

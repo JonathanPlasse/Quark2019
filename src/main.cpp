@@ -2,51 +2,98 @@
 #include <stdint.h>
 #include <Encoder.h>
 #include "motor.hpp"
-#include "conversion.h"
+#include "binary_serial.hpp"
 
-//Moteur Gauche
+// Left Motor
 #define M1_DIR1 A0
 #define M1_DIR2 A1
 #define M1_PWM 9
 #define ENC1_PIN1 2
 #define ENC1_PIN2 4
 
-//Moteur Droit
+// Right Motor
 #define M2_DIR1 A2
 #define M2_DIR2 A3
 #define M2_PWM 10
 #define ENC2_PIN1 3
 #define ENC2_PIN2 5
 
-//Asserevissement
-#define SAMPLE_TIME 5
-#define M1_KP 0.034274
-#define M1_KI 0.39104
-#define M1_KD 0.
-#define M2_KP 0.034467
-#define M2_KI 0.35558
-#define M2_KD 0.
+typedef struct {
+  uint8_t pwm;
+  uint8_t sample_time;
+  uint8_t nb_measure;
+  uint16_t nb_sample;
+  uint16_t wait_time;
+} configStruct;
 
-Motor m1(M1_DIR1, M1_DIR2, M1_PWM, ENC1_PIN1, ENC1_PIN2, SAMPLE_TIME, M1_KP, M1_KI, M1_KD);
-Motor m2(M2_DIR1, M2_DIR2, M2_PWM, ENC2_PIN1, ENC2_PIN2, SAMPLE_TIME, M2_KP, M2_KI, M2_KD);
+typedef struct {
+  uint32_t timestamp;
+  uint32_t position;
+  float speed;
+} measureStruct;
 
-uint32_t temps;
+configStruct config;
+measureStruct measure;
 
-void setup() {
-  /*Change the frequency of the pins 9, 10*/
-  TCCR1B = (TCCR1B & 0xf8) | 0x01;
+Motor motor1(M1_DIR1, M1_DIR2, M1_PWM);
+Motor motor2(M2_DIR1, M2_DIR2, M2_PWM);
 
-  Serial.begin(115200);
-  m1.setSpeed(1633*1.7);
-  m2.setSpeed(1633*1.7);
-  temps = millis() - SAMPLE_TIME;
+Encoder encoder1(ENC1_PIN1, ENC1_PIN2);
+Encoder encoder2(ENC2_PIN1, ENC2_PIN2);
+
+uint32_t last_time, last_position;
+uint16_t nb_measure_done, nb_sample_done;
+
+
+void step_response(Motor* motor, Encoder* encoder) {
+  read_data(&config, sizeof(config));
+
+  nb_measure_done = 0;
+  nb_sample_done = 0;
+
+  last_time = millis();
+
+  motor->set_pwm(config.pwm);
+
+  while (nb_measure_done < config.nb_measure) {
+    measure.timestamp = millis();
+
+    if (measure.timestamp - last_time > config.sample_time) {
+      last_time += config.sample_time;
+
+      last_position = measure.position;
+      measure.position = encoder->read();
+      measure.speed = (float)(measure.position-last_position)
+        / config.sample_time * 1000;
+
+      if (nb_sample_done < config.nb_sample) {
+        write_data(&measure, sizeof(measure));
+        nb_sample_done++;
+      }
+      else if (nb_sample_done < config.nb_sample + config.wait_time / config.sample_time) {
+        motor->set_pwm(0);
+        nb_sample_done++;
+      }
+      else if (nb_measure_done + 1 < config.nb_measure) {
+        nb_measure_done++;
+        nb_sample_done = 0;
+        motor->set_pwm(config.pwm);
+      }
+    }
+  }
 }
 
 
+void setup() {
+  // Change the frequency of the pwm.
+  TCCR1B = (TCCR1B & 0xf8) | 0x01;
+
+  // Initialize serial connection.
+  Serial.begin(115200);
+
+  // Run the step_response
+  step_response(&motor1, &encoder1);
+}
+
 void loop() {
-  if (millis() - temps > SAMPLE_TIME) {
-    m1.run();
-    m2.run();
-    temps = millis();
-  }
 }
