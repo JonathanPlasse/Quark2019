@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <Encoder.h>
 #include "motor.hpp"
+#include "rst.hpp"
 #include "binary_serial.hpp"
 
 // Left Motor
