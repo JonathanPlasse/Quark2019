@@ -54,6 +54,7 @@ class MotorModel(QWidget):
     def set_nb_measure(self, new_nb_measure):
         self.nb_measure = new_nb_measure
         self.progress_bar.setMaximum(self.nb_measure)
+        self.progress_bar.setValue(self.nb_measure)
 
     def set_nb_sample(self, new_nb_sample):
         self.nb_sample = new_nb_sample
@@ -130,7 +131,7 @@ class MotorModel(QWidget):
         self.progress_bar = QProgressBar()
         self.progress_bar.setMinimum(0)
         self.progress_bar.setMaximum(self.nb_measure)
-        self.progress_bar.setValue(0)
+        self.progress_bar.setValue(self.nb_measure)
 
         self.run_button = QPushButton('Run')
         self.run_button.clicked.connect(self.run_step_response)
@@ -176,7 +177,7 @@ class MotorModel(QWidget):
     def run_step_response(self):
         self.get_step_response()
         self.compute_regression()
-        self.k_edit.setText(str(self.k))
+        self.k_edit.setText(str(self.k/self.pwm))
         self.tau_edit.setText(str(self.tau))
         self.plot()
 

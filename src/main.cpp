@@ -63,7 +63,8 @@ void step_response(Motor* motor, Encoder* encoder) {
 
       last_position = measure.position;
       measure.position = encoder->read();
-      measure.speed = (measure.position-last_position)/config.sample_time;
+      measure.speed = (float)(measure.position-last_position)
+        / config.sample_time * 1000;
 
       if (nb_sample_done < config.nb_sample) {
         write_data(&measure, sizeof(measure));
