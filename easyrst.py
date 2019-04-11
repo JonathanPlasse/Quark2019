@@ -11,38 +11,31 @@ from matplotlib.figure import Figure
 import matplotlib
 import control as cnt
 import numpy as np
+from numpy.polynomial import polynomial as P
 
 matplotlib.use('Qt5Agg')
 
 
-def f(t, k, tau):
-    return k * (1 - np.exp(-t / tau))
-
-
-def residual(p, t, speed):
-    return speed - f(t, *p)
-
-
 def solve_diophantine(a, b, c):
-    """Solve diophantine equation a*x+b*y=c"""
+    """Solve diophantine equation a*x+b*y=c
+
+    a, b, c: ndarray
+    """
     na = a.shape[0]
     nb = b.shape[0]
     nx = nb - 1
     ny = na - 1
     n = na + nb - 2
 
-    A = np.zeros((n, n))
+    sys = np.zeros((n, n))
 
     for i in range(nx):
-        A[i:na+i, i] = a
+        sys[i:na+i, i] = a
 
     for i in range(ny):
-        A[i:nb+i, i+nx] = b
+        sys[i:nb+i, i+nx] = b
 
-    print(A)
-
-    B = c
-    res = np.linalg.solve(A, B)
+    res = np.linalg.solve(sys, c)
     print(res)
     x = res[:nx]
     y = res[nx:]
@@ -65,6 +58,12 @@ class EasyRst(QWidget):
         self.t = cnt.tf([293.9184, -229.4621], [1, 0])
         self.time = np.linspace(0, 0.99, 100)
 
+        self.gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.Ts)
+
+        # print(self.gd.num[0][0].shape, self.gd.den[0][0])
+        # print(self.k, self.gd.zero(), self.gd.pole())
+        print(P.polymul([1, -1], [1, -1]))
+
     def initUI(self):
         self.figure = Figure()
         self.canvas = FigureCanvas(self.figure)
@@ -81,22 +80,26 @@ class EasyRst(QWidget):
         self.setLayout(displayLayout)
 
     def computeResponse(self):
-        gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.Ts)
-        print(gd.num[0][0].shape, gd.den[0][0])
-
-        y = self.t*cnt.feedback(gd/self.s, self.r)
+        y = self.t*cnt.feedback(self.gd/self.s, self.r)
+        u = self.t*cnt.feedback(1/self.s, self.gd*self.r)
 
         _, self.stepY = cnt.step_response(y, self.time)
+        _, self.stepU = cnt.step_response(u, self.time)
 
     def plot(self):
         self.figure.clear()
 
         self.computeResponse()
 
-        ax = self.figure.add_subplot(111)
-        ax.plot(self.time, self.stepY[0], label='Y')
-        ax.set_title('Y response')
-        ax.legend()
+        axY = self.figure.add_subplot(121)
+        axY.plot(self.time, self.stepY[0], label='Y')
+        axY.set_title('Y response')
+        axY.legend()
+
+        axU = self.figure.add_subplot(122)
+        axU.plot(self.time, self.stepU[0], label='U')
+        axU.set_title('U response')
+        axU.legend()
 
         self.canvas.draw()
 
