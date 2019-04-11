@@ -6,7 +6,7 @@ import numpy as np
 
 
 def test_delay1():
-    assert delay(0) == np.array([1])
+    assert np.allclose(delay(0), np.array([1]))
 
 
 def test_delay2():

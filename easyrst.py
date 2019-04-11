@@ -16,11 +16,15 @@ from numpy.polynomial import polynomial as P
 matplotlib.use('Qt5Agg')
 
 
-def zero(z):
-    return np.array([1, -z])
+def zero(z0):
+    """Return a monic zero polynomial 1-z0*z^(-1)"""
+    assert z0 != 0
+    return np.array([1, -z0])
 
 
 def delay(d):
+    """Return z^(-d)"""
+    assert d >= 0
     z_d = np.zeros(d+1)
     z_d[-1] += 1
     return z_d
