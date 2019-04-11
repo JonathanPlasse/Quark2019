@@ -16,6 +16,23 @@ from numpy.polynomial import polynomial as P
 matplotlib.use('Qt5Agg')
 
 
+def zero(z):
+    return np.array([1, -z])
+
+
+def delay(d):
+    z_d = np.zeros(d+1)
+    z_d[-1] += 1
+    return z_d
+
+
+def calculate_rst(b_minus, a_minus, a_m, d=1, p=0):
+    """Calculate the coefficient of the rst"""
+    perturbation = P.polypow(zero(1), p)
+    solve_diophantine(P.polymul(perturbation, a_minus),
+                      P.polymul(delay(1), b_minus), a_m)
+
+
 def solve_diophantine(a, b, c):
     """Solve diophantine equation a*x+b*y=c
 
@@ -23,9 +40,23 @@ def solve_diophantine(a, b, c):
     """
     na = a.shape[0]
     nb = b.shape[0]
+    nc = c.shape[0]
     nx = nb - 1
     ny = na - 1
     n = na + nb - 2
+
+    if nc < n:
+        c = c.copy()
+        c.resize(n)
+
+    if nc <= n:
+        nx = nb - 1
+        ny = na - 1
+    else:
+        n = nc
+        nx = nc - na + 1
+        ny = na - 1
+        print(nx, ny)
 
     sys = np.zeros((n, n))
 
