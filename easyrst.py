@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt5.QtWidgets import (QWidget, QFileDialog, QPushButton, QDoubleSpinBox, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox, QApplication)
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QApplication)
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg\
+                                        as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT\
+                                        as NavigationToolbar
 from matplotlib.figure import Figure
 import matplotlib
 import control as cnt
@@ -12,11 +14,40 @@ import numpy as np
 
 matplotlib.use('Qt5Agg')
 
+
 def f(t, k, tau):
     return k * (1 - np.exp(-t / tau))
 
+
 def residual(p, t, speed):
     return speed - f(t, *p)
+
+
+def solve_diophantine(a, b, c):
+    """Solve diophantine equation a*x+b*y=c"""
+    na = a.shape[0]
+    nb = b.shape[0]
+    nx = nb - 1
+    ny = na - 1
+    n = na + nb - 2
+
+    A = np.zeros((n, n))
+
+    for i in range(nx):
+        A[i:na+i, i] = a
+
+    for i in range(ny):
+        A[i:nb+i, i+nx] = b
+
+    print(A)
+
+    B = c
+    res = np.linalg.solve(A, B)
+    print(res)
+    x = res[:nx]
+    y = res[nx:]
+    return x, y
+
 
 class EasyRst(QWidget):
     def __init__(self):
@@ -51,8 +82,9 @@ class EasyRst(QWidget):
 
     def computeResponse(self):
         gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.Ts)
+        print(gd.num[0][0].shape, gd.den[0][0])
 
-        y = self.t*cnt.feedback(gd/self.s,self.r)
+        y = self.t*cnt.feedback(gd/self.s, self.r)
 
         _, self.stepY = cnt.step_response(y, self.time)
 
