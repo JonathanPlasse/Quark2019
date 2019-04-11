@@ -33,8 +33,8 @@ def delay(d):
 def calculate_rst(b_minus, a_minus, a_m, d=1, p=0):
     """Calculate the coefficient of the rst"""
     perturbation = P.polypow(zero(1), p)
-    solve_diophantine(P.polymul(perturbation, a_minus),
-                      P.polymul(delay(1), b_minus), a_m)
+    return solve_diophantine(P.polymul(perturbation, a_minus),
+                             P.polymul(delay(1), b_minus), a_m)
 
 
 def solve_diophantine(a, b, c):
@@ -62,18 +62,19 @@ def solve_diophantine(a, b, c):
         ny = na - 1
         print(nx, ny)
 
-    sys = np.zeros((n, n))
+    s = np.zeros((n, n))
 
     for i in range(nx):
-        sys[i:na+i, i] = a
+        s[i:na+i, i] = a
 
     for i in range(ny):
-        sys[i:nb+i, i+nx] = b
+        s[i:nb+i, i+nx] = b
 
-    res = np.linalg.solve(sys, c)
-    print(res)
+    res = np.linalg.solve(s, c)
+
     x = res[:nx]
     y = res[nx:]
+
     return x, y
 
 
@@ -97,7 +98,6 @@ class EasyRst(QWidget):
 
         # print(self.gd.num[0][0].shape, self.gd.den[0][0])
         # print(self.k, self.gd.zero(), self.gd.pole())
-        print(P.polymul([1, -1], [1, -1]))
 
     def initUI(self):
         self.figure = Figure()
@@ -140,7 +140,12 @@ class EasyRst(QWidget):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    er = EasyRst()
-    er.show()
-    sys.exit(app.exec_())
+    b_minus = 0.0001594*zero(-0.921)
+    a_minus = zero(1)
+    a_m = P.polypow(zero(0.7), 2)
+    print(b_minus, a_minus, a_m)
+    print(calculate_rst(b_minus, a_minus, a_m))
+    # app = QApplication(sys.argv)
+    # er = EasyRst()
+    # er.show()
+    # sys.exit(app.exec_())
