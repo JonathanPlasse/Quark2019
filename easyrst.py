@@ -89,18 +89,27 @@ class EasyRst(QWidget):
         self.initUI()
 
     def initControl(self):
-        self.Ts = 0.01
+        self.ts = 0.01
         self.k = 3.456/24.76
         self.tau = 1/24.76
+
+        self.gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.ts)
+
+        c = np.exp(-self.ts/self.tau)
+
+        b_minus = self.k*np.array([self.ts-self.tau*(1-c),
+                                   self.tau*(1-c)-c*self.ts])
+        b_plus = np.ones(1)
+        a_minus = zero(1)
+        a_plus = zero(c)
+        a_m = P.polypow(zero(0.7), 2)
+        print(b_minus, a_minus, a_m)
+        print(calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m))
+
         self.r = cnt.tf([293.9184, -229.4621], [1, 0])
         self.s = cnt.tf([1, -0.4469], [1, 0])
         self.t = cnt.tf([293.9184, -229.4621], [1, 0])
         self.time = np.linspace(0, 0.99, 100)
-
-        self.gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.Ts)
-
-        # print(self.gd.num[0][0].shape, self.gd.den[0][0])
-        # print(self.k, self.gd.zero(), self.gd.pole())
 
     def initUI(self):
         self.figure = Figure()
@@ -143,14 +152,7 @@ class EasyRst(QWidget):
 
 
 if __name__ == '__main__':
-    b_minus = 0.0001594*zero(-0.921)
-    b_plus = np.ones(1)
-    a_minus = zero(1)
-    a_plus = zero(0.7807)
-    a_m = P.polypow(zero(0.7), 2)
-    print(b_minus, a_minus, a_m)
-    print(calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m))
-    # app = QApplication(sys.argv)
-    # er = EasyRst()
-    # er.show()
-    # sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    er = EasyRst()
+    er.show()
+    sys.exit(app.exec_())
