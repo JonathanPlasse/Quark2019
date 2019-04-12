@@ -13,18 +13,24 @@ import numpy as np
 from numpy.polynomial import polynomial as P
 
 
-def zero(z0):
-    """Return a monic zero polynomial 1-z0*z^(-1)"""
-    assert z0 != 0
-    return np.array([1, -z0])
+def zero(r):
+    """Return a monic polynomial with 1-r*z^(-1)"""
+    return np.array([1, -r])
 
 
 def delay(d):
     """Return z^(-d)"""
-    assert d >= 0
     z_d = np.zeros(d+1)
     z_d[-1] += 1
     return z_d
+
+
+def poly2tf(p):
+    """Convert a ndarray to a transfer function"""
+    n_p = p.shape[0]
+    z = np.zeros(n_p)
+    z[0] = 1
+    return cnt.tf(p, z)
 
 
 def calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m,
@@ -37,6 +43,9 @@ def calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m,
     r = P.polymul(r0, a_plus)
     s = P.polymul(s2, P.polymul(b_plus, perturbation))
     t = P.polymul(t0, a_plus)
+
+    print(r, s, t)
+
     return r, s, t
 
 
@@ -45,38 +54,37 @@ def solve_diophantine(a, b, c):
 
     a, b, c: ndarray
     """
-    na = a.shape[0]
-    nb = b.shape[0]
-    nc = c.shape[0]
-    nx = nb - 1
-    ny = na - 1
-    n = na + nb - 2
+    n_a = a.shape[0]
+    n_b = b.shape[0]
+    n_c = c.shape[0]
+    n_x = n_b - 1
+    n_y = n_a - 1
+    n = n_a + n_b - 2
 
-    if nc < n:
+    if n_c < n:
         c = c.copy()
         c.resize(n)
 
-    if nc <= n:
-        nx = nb - 1
-        ny = na - 1
+    if n_c <= n:
+        n_x = n_b - 1
+        n_y = n_a - 1
     else:
-        n = nc
-        nx = nc - na + 1
-        ny = na - 1
-        print(nx, ny)
+        n = n_c
+        n_x = n_c - n_a + 1
+        n_y = n_a - 1
 
     s = np.zeros((n, n))
 
-    for i in range(nx):
-        s[i:na+i, i] = a
+    for i in range(n_x):
+        s[i:n_a+i, i] = a
 
-    for i in range(ny):
-        s[i:nb+i, i+nx] = b
+    for i in range(n_y):
+        s[i:n_b+i, i+n_x] = b
 
     res = np.linalg.solve(s, c)
 
-    x = res[:nx]
-    y = res[nx:]
+    x = res[:n_x]
+    y = res[n_x:]
 
     return x, y
 
@@ -90,8 +98,10 @@ class EasyRst(QWidget):
 
     def initControl(self):
         self.ts = 0.01
-        self.k = 3.456/24.76
-        self.tau = 1/24.76
+        self.k = 45
+        self.tau = 0.145
+        # self.k = 3.456/24.76
+        # self.tau = 1/24.76
 
         self.gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.ts)
 
@@ -103,12 +113,9 @@ class EasyRst(QWidget):
         a_minus = zero(1)
         a_plus = zero(c)
         a_m = P.polypow(zero(0.7), 2)
-        print(b_minus, a_minus, a_m)
-        print(calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m))
-
-        self.r = cnt.tf([293.9184, -229.4621], [1, 0])
-        self.s = cnt.tf([1, -0.4469], [1, 0])
-        self.t = cnt.tf([293.9184, -229.4621], [1, 0])
+        self.r, self.s, self.t =\
+            map(poly2tf, calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m,
+                                       d=1, p=1))
         self.time = np.linspace(0, 0.99, 100)
 
     def initUI(self):
