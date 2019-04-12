@@ -27,13 +27,17 @@ def delay(d):
     return z_d
 
 
-def calculate_rst(b_minus, a_minus, a_m, a0=np.array([1]), d=1, p=0):
+def calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m,
+                  a0=np.ones(1), d=1, p=0):
     """Calculate the coefficient of the rst"""
     perturbation = P.polypow(zero(1), p)
     s2, r0 = solve_diophantine(P.polymul(perturbation, a_minus),
                                P.polymul(delay(1), b_minus), a_m)
     t0 = a0 * sum(a_m) / sum(b_minus)
-    return r0, s2, t0
+    r = P.polymul(r0, a_plus)
+    s = P.polymul(s2, P.polymul(b_plus, perturbation))
+    t = P.polymul(t0, a_plus)
+    return r, s, t
 
 
 def solve_diophantine(a, b, c):
@@ -140,10 +144,12 @@ class EasyRst(QWidget):
 
 if __name__ == '__main__':
     b_minus = 0.0001594*zero(-0.921)
+    b_plus = np.ones(1)
     a_minus = zero(1)
+    a_plus = zero(0.7807)
     a_m = P.polypow(zero(0.7), 2)
     print(b_minus, a_minus, a_m)
-    print(calculate_rst(b_minus, a_minus, a_m))
+    print(calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m))
     # app = QApplication(sys.argv)
     # er = EasyRst()
     # er.show()
