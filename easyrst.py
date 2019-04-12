@@ -30,11 +30,13 @@ def delay(d):
     return z_d
 
 
-def calculate_rst(b_minus, a_minus, a_m, d=1, p=0):
+def calculate_rst(b_minus, a_minus, a_m, a0=np.array([1]), d=1, p=0):
     """Calculate the coefficient of the rst"""
     perturbation = P.polypow(zero(1), p)
-    return solve_diophantine(P.polymul(perturbation, a_minus),
-                             P.polymul(delay(1), b_minus), a_m)
+    s2, r0 = solve_diophantine(P.polymul(perturbation, a_minus),
+                               P.polymul(delay(1), b_minus), a_m)
+    t0 = a0 * sum(a_m) / sum(b_minus)
+    return r0, s2, t0
 
 
 def solve_diophantine(a, b, c):
