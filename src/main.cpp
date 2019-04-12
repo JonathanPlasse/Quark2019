@@ -43,15 +43,15 @@ Encoder encoder1(ENC1_PIN1, ENC1_PIN2);
 Encoder encoder2(ENC2_PIN1, ENC2_PIN2);
 
 const uint8_t order = 2;
-float r1[order+1] = {17.46145078, -31.14165156, 13.86770078};
-float s1[order+1] = {1., -0.72649557, -0.27350443};
-float t1[order+1] = {2.43874987 -2.25124987, 0};
-float r2[order+1] = {21.491, -38.5486, 17.2577};
-float s2[order+1] = {1., -0.7259, -0.2741};
-float t2[order+1] = {3.0011, -2.8011, 0};
+float r1[order+1] = {17.66, -31.48, 14.01};
+float s1[order+1] = {1., -0.7265 -0.2735};
+float t1[order+1] = {2.466, -2.275, 0};
+float r2[order+1] = {19.94, -35.67, 15.94};
+float s2[order+1] = {1., -0.7262, -0.2738};
+float t2[order+1] = {2.784, -2.587, 0};
 
-float reference1 = 1633, measurement1, control1;
-float reference2 = 1633, measurement2, control2;
+float reference1 = 1633*10, measurement1, control1;
+float reference2 = 1633*10, measurement2, control2;
 float min_control = -255, max_control = 255;
 
 Rst rst1(&reference1, &measurement1, &control1, min_control, max_control);
@@ -132,12 +132,12 @@ void setup() {
   // Initialize serial connection.
   Serial.begin(115200);
 
-  // Launch rst control
-  // control_system();
-
   // Run the step_response
-  step_response(&motor1, &encoder1);
+  // step_response(&motor1, &encoder1);
   // step_response(&motor2, &encoder2);
+
+  // Launch rst control
+  control_system();
 }
 
 void loop() {
