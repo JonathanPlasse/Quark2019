@@ -43,9 +43,12 @@ Encoder encoder1(ENC1_PIN1, ENC1_PIN2);
 Encoder encoder2(ENC2_PIN1, ENC2_PIN2);
 
 const uint8_t order = 2;
-float r[order+1] = {21.491, -38.5486, 17.2577};
-float s[order+1] = {1., -0.7259, -0.2741};
-float t[order+1] = {3.0011, -2.8011, 0};
+float r1[order+1] = {17.46145078, -31.14165156, 13.86770078};
+float s1[order+1] = {1., -0.72649557, -0.27350443};
+float t1[order+1] = {2.43874987 -2.25124987, 0};
+float r2[order+1] = {21.491, -38.5486, 17.2577};
+float s2[order+1] = {1., -0.7259, -0.2741};
+float t2[order+1] = {3.0011, -2.8011, 0};
 
 float reference1 = 1633, measurement1, control1;
 float reference2 = 1633, measurement2, control2;
@@ -100,8 +103,8 @@ void step_response(Motor* motor, Encoder* encoder) {
 
 void control_system() {
   // Set rst coefficient
-  rst1.set_rst(r, s, t, order);
-  rst2.set_rst(r, s, t, order);
+  rst1.set_rst(r1, s1, t1, order);
+  rst2.set_rst(r2, s2, t2, order);
 
   while (true) {
     time = millis();
@@ -130,10 +133,10 @@ void setup() {
   Serial.begin(115200);
 
   // Launch rst control
-  control_system();
+  // control_system();
 
   // Run the step_response
-  // step_response(&motor1, &encoder1);
+  step_response(&motor1, &encoder1);
   // step_response(&motor2, &encoder2);
 }
 
