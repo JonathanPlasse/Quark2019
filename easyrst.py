@@ -8,12 +8,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg\
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT\
                                         as NavigationToolbar
 from matplotlib.figure import Figure
-import matplotlib
 import control as cnt
 import numpy as np
 from numpy.polynomial import polynomial as P
-
-matplotlib.use('Qt5Agg')
 
 
 def zero(z0):
