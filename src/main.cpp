@@ -42,7 +42,20 @@ Motor motor2(M2_DIR1, M2_DIR2, M2_PWM);
 Encoder encoder1(ENC1_PIN1, ENC1_PIN2);
 Encoder encoder2(ENC2_PIN1, ENC2_PIN2);
 
-uint32_t last_time, last_position;
+const uint8_t order = 2;
+float r[order+1] = {21.491, -38.5486, 17.2577};
+float s[order+1] = {1., -0.7259, -0.2741};
+float t[order+1] = {3.0011, -2.8011, 0};
+
+float reference1 = 1633, measurement1, control1;
+float reference2 = 1633, measurement2, control2;
+float min_control = -255, max_control = 255;
+
+Rst rst1(&reference1, &measurement1, &control1, min_control, max_control);
+Rst rst2(&reference2, &measurement2, &control2, min_control, max_control);
+
+const uint32_t sample_time = 10;
+uint32_t time, last_time, last_position;
 uint16_t nb_measure_done, nb_sample_done;
 
 
@@ -85,6 +98,30 @@ void step_response(Motor* motor, Encoder* encoder) {
 }
 
 
+void control_system() {
+  // Set rst coefficient
+  rst1.set_rst(r, s, t, order);
+  rst2.set_rst(r, s, t, order);
+
+  while (true) {
+    time = millis();
+    if (time - last_time > sample_time) {
+      // Update last_time
+      last_time += sample_time;
+
+      measurement1 = encoder1.read();
+      measurement2 = encoder2.read();
+
+      rst1.compute();
+      rst2.compute();
+
+      motor1.set_pwm(control1);
+      motor2.set_pwm(control2);
+    }
+  }
+}
+
+
 void setup() {
   // Change the frequency of the pwm.
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
@@ -92,8 +129,12 @@ void setup() {
   // Initialize serial connection.
   Serial.begin(115200);
 
+  // Launch rst control
+  control_system();
+
   // Run the step_response
-  step_response(&motor1, &encoder1);
+  // step_response(&motor1, &encoder1);
+  // step_response(&motor2, &encoder2);
 }
 
 void loop() {

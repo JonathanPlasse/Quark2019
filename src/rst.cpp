@@ -36,8 +36,8 @@ void Rst::compute() {
   _control_hist[0] = 0;
   for (int i = 0 ; i <= _order ; i++) {
     _control_hist[0] += _t[i]*_reference_hist[i]
-                     - _r[i]*_measurement_hist[i]
-                     - _s[i]*_control_hist[i];
+                      - _r[i]*_measurement_hist[i]
+                      - _s[i]*_control_hist[i];
   }
 
   // Sature control signal

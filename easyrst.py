@@ -100,8 +100,6 @@ class EasyRst(QWidget):
         self.ts = 0.01
         self.k = 45
         self.tau = 0.145
-        # self.k = 3.456/24.76
-        # self.tau = 1/24.76
 
         self.gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.ts)
 
