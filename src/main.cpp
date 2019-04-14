@@ -1,8 +1,6 @@
+#include "main.hpp"
 #include <Arduino.h>
 #include <stdint.h>
-#include <Encoder.h>
-#include "motor.hpp"
-#include "rst.hpp"
 #include "binary_serial.hpp"
 
 // Left Motor
@@ -57,88 +55,101 @@ float min_control = -255, max_control = 255;
 Rst rst1(&reference1, &measurement1, &control1, min_control, max_control);
 Rst rst2(&reference2, &measurement2, &control2, min_control, max_control);
 
-const uint32_t sample_time = 10;
+uint32_t sample_time = 10;
 uint32_t time, last_time, last_position;
 uint16_t nb_measure_done, nb_sample_done;
-
-
-void step_response(Motor* motor, Encoder* encoder) {
-  read_data(&config, sizeof(config));
-
-  nb_measure_done = 0;
-  nb_sample_done = 0;
-
-  last_time = millis();
-
-  motor->set_pwm(config.pwm);
-
-  while (nb_measure_done < config.nb_measure) {
-    measure.timestamp = millis();
-
-    if (measure.timestamp - last_time > config.sample_time) {
-      last_time += config.sample_time;
-
-      last_position = measure.position;
-      measure.position = encoder->read();
-      measure.speed = (float)(measure.position-last_position)
-        / config.sample_time * 1000;
-
-      if (nb_sample_done < config.nb_sample) {
-        write_data(&measure, sizeof(measure));
-        nb_sample_done++;
-      }
-      else if (nb_sample_done < config.nb_sample + config.wait_time / config.sample_time) {
-        motor->set_pwm(0);
-        nb_sample_done++;
-      }
-      else if (nb_measure_done + 1 < config.nb_measure) {
-        nb_measure_done++;
-        nb_sample_done = 0;
-        motor->set_pwm(config.pwm);
-      }
-    }
-  }
-}
-
-
-void control_system() {
-  // Set rst coefficient
-  rst1.set_rst(r1, s1, t1, order);
-  rst2.set_rst(r2, s2, t2, order);
-
-  while (true) {
-    time = millis();
-    if (time - last_time > sample_time) {
-      // Update last_time
-      last_time += sample_time;
-
-      measurement1 = encoder1.read();
-      measurement2 = encoder2.read();
-
-      rst1.compute();
-      rst2.compute();
-
-      motor1.set_pwm(control1);
-      motor2.set_pwm(control2);
-    }
-  }
-}
 
 
 void setup() {
   // Change the frequency of the pwm.
   TCCR1B = (TCCR1B & 0xf8) | 0x01;
 
+  // Set rst coefficient
+  rst1.set_rst(r1, s1, t1, order);
+  rst2.set_rst(r2, s2, t2, order);
+
   // Initialize serial connection.
   Serial.begin(115200);
-
-  // Run the step_response
-  // step_response(&motor1, &encoder1);
-  // step_response(&motor2, &encoder2);
-
-  // Launch rst control
-  control_system();
 }
 
+
 void loop() {
+  timer(millis(), sample_time);
+}
+
+
+void timer(uint32_t time, uint32_t sample_time) {
+  static uint32_t last_time = millis();
+
+  if (time - last_time > sample_time) {
+    // Run the step_response
+    // step_response(&motor1, &encoder1);
+    // step_response(&motor2, &encoder2);
+    control_system();
+  }
+}
+
+
+void control_system() {
+  // Update last_time
+  last_time += sample_time;
+
+  measurement1 = encoder1.read();
+  measurement2 = encoder2.read();
+
+  rst1.compute();
+  rst2.compute();
+
+  motor1.set_pwm(control1);
+  motor2.set_pwm(control2);
+}
+
+
+bool step_response(Motor* motor, Encoder* encoder) {
+  // Indicate if initialization has been done
+  static bool init = false;
+
+  // Initialize
+  if (!init) {
+    // Receive configuration
+    read_data(&config, sizeof(config));
+
+    // Set sample time
+    sample_time = config.sample_time;
+
+    // Initialize counter
+    nb_measure_done = 0;
+    nb_sample_done = 0;
+
+    // Power motor
+    motor->set_pwm(config.pwm);
+
+    init = true;
+  }
+
+  if (nb_measure_done < config.nb_measure) {
+    measure.timestamp = millis();
+    last_position = measure.position;
+    measure.position = encoder->read();
+    measure.speed = (float)(measure.position-last_position)
+      / config.sample_time * 1000;
+
+    if (nb_sample_done < config.nb_sample) {
+      write_data(&measure, sizeof(measure));
+      nb_sample_done++;
+    }
+    else if (nb_sample_done < config.nb_sample + config.wait_time / config.sample_time) {
+      motor->set_pwm(0);
+      nb_sample_done++;
+    }
+    else if (nb_measure_done + 1 < config.nb_measure) {
+      nb_measure_done++;
+      nb_sample_done = 0;
+      motor->set_pwm(config.pwm);
+    }
+    return false;
+  }
+  // Step response done
+  init = false;
+  return true;
 }
