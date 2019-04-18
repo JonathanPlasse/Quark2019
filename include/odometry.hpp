@@ -2,33 +2,23 @@
 #define ODOMETRY_HPP
 
 #include <stdint.h>
+#include "position.h"
 
 // Calculate the position of the robot
 class Odometry {
 public:
   // Initialisation of the Odometry class
-  Odometry(uint32_t resolution, float center_distance, float wheel_diameter, float ratio, float x = 0, float y = 0, float theta = 0);
+  Odometry(uint32_t resolution, float center_distance, float wheel_diameter,
+    float ratio, position_t p = {0, 0, 0});
 
   // Update odometry
   void update(float left_step, float right_step);
 
-  // Get x
-  float getX();
+  // Get position
+  position_t getPosition() const;
 
-  // Get y
-  float getY();
-
-  // Get theta
-  float getTheta();
-
-  // Set x
-  void setX(float x);
-
-  // Set y
-  void setY(float y);
-
-  // Set theta
-  void setTheta(float theta);
+  // Set position
+  void setPosition(position_t p);
 
 private:
   // Count per revolution of encoder
@@ -44,7 +34,7 @@ private:
   float _ratio;
 
   // Position
-  float _x, _y, _theta;
+  position_t _p;
 };
 
 #endif
