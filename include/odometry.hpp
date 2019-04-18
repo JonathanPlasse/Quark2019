@@ -9,16 +9,16 @@ class Odometry {
 public:
   // Initialisation of the Odometry class
   Odometry(uint32_t resolution, float center_distance, float wheel_diameter,
-    float ratio, position_t p = {0, 0, 0});
+    float ratio);
 
   // Update odometry
   void update(float left_step, float right_step);
 
   // Get position
-  position_t getPosition() const;
+  const position_t* getPosition() const;
 
   // Set position
-  void setPosition(position_t p);
+  void setPosition(const position_t* p);
 
 private:
   // Count per revolution of encoder
