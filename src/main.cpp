@@ -32,7 +32,7 @@ Rst rst1(&reference1, &measurement1, &control1, min_control, max_control);
 Rst rst2(&reference2, &measurement2, &control2, min_control, max_control);
 
 // Initialization for the timer
-uint32_t sample_time = 10;
+uint8_t sample_time = 10;
 uint32_t time, last_time;
 
 
@@ -55,7 +55,7 @@ void loop() {
 }
 
 
-void timer(uint32_t time, uint32_t sample_time) {
+void timer(uint32_t time, uint8_t sample_time) {
   static uint32_t last_time = millis();
 
   if (time - last_time > sample_time) {

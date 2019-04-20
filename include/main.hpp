@@ -22,7 +22,7 @@
 #define ENC2_PIN2 5
 
 // Execute function every sample_time
-void timer(uint32_t time, uint32_t sample_time);
+void timer(uint32_t time, uint8_t sample_time);
 
 // Control the motor
 void control_system();
