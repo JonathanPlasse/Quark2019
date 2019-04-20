@@ -59,18 +59,18 @@ void timer(uint32_t time, uint32_t sample_time) {
   static uint32_t last_time = millis();
 
   if (time - last_time > sample_time) {
+    // Update last_time
+    last_time += sample_time;
+
     // Run the step_response
-    // step_response(&motor1, &encoder1, &sample_time);
+    step_response(&motor1, &encoder1, &sample_time);
     // step_response(&motor2, &encoder2, &sample_time);
-    control_system();
+    // control_system();
   }
 }
 
 
 void control_system() {
-  // Update last_time
-  last_time += sample_time;
-
   // Read motor position
   measurement1 = encoder1.read();
   measurement2 = encoder2.read();

@@ -1,15 +1,16 @@
 #include "step_response.hpp"
 #include "binary_serial.hpp"
 
-// Initialization of the structure for communication
-configStruct config;
-measureStruct measure;
-
 bool step_response(Motor* motor, Encoder* encoder, uint32_t* sample_time) {
+  // Initialization of the structure for communication
+  static config_t config;
+  static measure_t measure;
+
   // Indicate if initialization has been done
   static bool init = false;
 
-  static uint16_t nb_measure_done, nb_sample_done;
+  static uint8_t nb_measure_done = 0;
+  static uint16_t nb_sample_done = 0;
 
   // Initialize
   if (!init) {
@@ -17,7 +18,7 @@ bool step_response(Motor* motor, Encoder* encoder, uint32_t* sample_time) {
     read_data(&config, sizeof(config));
 
     // Set sample time
-    *sample_time = config.sample_time;
+    // *sample_time = config.sample_time;
 
     // Initialize counter
     nb_measure_done = 0;
