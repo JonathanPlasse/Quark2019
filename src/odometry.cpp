@@ -19,7 +19,7 @@ void Odometry::update(float left_step, float right_step) {
 }
 
 const position_t* Odometry::getPosition() const {
-  return &_p;
+  return &_position;
 }
 
 void Odometry::setPosition(const position_t* position) {

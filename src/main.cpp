@@ -4,6 +4,8 @@
 #include "motor.hpp"
 #include "step_response.hpp"
 #include "rst.hpp"
+#include "odometry.hpp"
+#include "binary_serial.hpp"
 
 // Initialization of the motors
 Motor motor1(M1_DIR1, M1_DIR2, M1_PWM);
@@ -34,6 +36,9 @@ Rst rst2(&reference2, &measurement2, &control2, min_control, max_control);
 // Initialization for the timer
 uint8_t sample_time = 10;
 uint32_t time, last_time;
+
+// Initialization of Odometry
+Odometry odom(1633, 20, 7.5, 1);
 
 
 void setup() {
@@ -77,6 +82,14 @@ void control_system() {
   last_measurement2 = measurement2;
   measurement1 = encoder1.read();
   measurement2 = encoder2.read();
+
+  // Odometry
+  odom.update(measurement1 - last_measurement1,
+              measurement2 - last_measurement2);
+  static uint8_t c = 0;
+  if (c++ == 0)
+    write_data(odom.getPosition(), sizeof(position_t));
+
 
   // Compute control command
   rst1.compute();
