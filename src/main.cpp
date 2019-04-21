@@ -17,12 +17,12 @@ Encoder encoder2(ENC2_PIN1, ENC2_PIN2);
 
 // Initialization of the RST setting
 const uint8_t order = 2;
-float r1[order+1] = {13.43, -23.65, 10.40};
-float s1[order+1] = {1., -0.7278, -0.2722};
-float t1[order+1] = {1.877, -1.689, 0.};
-float r2[order+1] = {15.04, -26.56, 11.71};
-float s2[order+1] = {1., -0.7275, -0.2725};
-float t2[order+1] = {2.102, -1.902, 0.};
+float r1[order+1] = {52.38595863564986, -94.7719172712997, 42.76095863564984};
+float s1[order+1] = {1.0, -0.7251297263184233, -0.2748702736815767};
+float t1[order+1] = {7.314144660912829, -6.939144660912829, 0.};
+float r2[order+1] = {58.744438426449506, -106.42221018623232, 48.07777175978282};
+float s2[order+1] = {1.0, -0.7249983334697319, -0.2750016665302681};
+float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 float min_control = -200, max_control = 200;
 
 // Initialization of the system variables
@@ -34,7 +34,7 @@ Rst rst1(&reference1, &measurement1, &control1, min_control, max_control);
 Rst rst2(&reference2, &measurement2, &control2, min_control, max_control);
 
 // Initialization for the timer
-uint8_t sample_time = 10;
+uint8_t sample_time = 5;
 uint32_t time, last_time;
 
 // Initialization of Odometry
@@ -86,9 +86,11 @@ void control_system() {
   // Odometry
   odom.update(measurement1 - last_measurement1,
               measurement2 - last_measurement2);
-  static uint8_t c = 0;
-  if (c++ == 0)
+  static uint8_t c = 100;
+  if (c++ == 100) {
     write_data(odom.getPosition(), sizeof(position_t));
+    c = 0;
+  }
 
 
   // Compute control command
