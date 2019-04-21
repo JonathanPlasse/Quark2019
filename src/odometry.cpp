@@ -2,13 +2,13 @@
 #include <math.h>
 
 Odometry::Odometry(uint32_t resolution, float center_distance,
-  float wheel_diameter, float ratio) :
+  float wheel_perimeter, float ratio) :
   _resolution(resolution), _center_distance(center_distance),
-  _wheel_diameter(wheel_diameter), _ratio(ratio), _position({0, 0, 0}) {}
+  _wheel_perimeter(wheel_perimeter), _ratio(ratio), _position({0, 0, 0}) {}
 
 void Odometry::update(float left_step, float right_step) {
-  float left_distance = left_step * _wheel_diameter / _resolution;
-  float right_distance = right_step * _ratio * _wheel_diameter / _resolution;
+  float left_distance = left_step * _wheel_perimeter / _resolution;
+  float right_distance = right_step * _ratio * _wheel_perimeter / _resolution;
 
   float translation = (left_distance + right_distance) / 2;
   float rotation = (-left_distance + right_distance) / _center_distance;

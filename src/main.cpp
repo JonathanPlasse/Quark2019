@@ -26,7 +26,7 @@ float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 float min_control = -200, max_control = 200;
 
 // Initialization of the system variables
-float reference1 = 1633*1, measurement1, last_measurement1 = 0, control1;
+float reference1 = -1633*1, measurement1, last_measurement1 = 0, control1;
 float reference2 = 1633*1, measurement2, last_measurement2 = 0, control2;
 
 // Initialization of the RST
@@ -38,7 +38,7 @@ uint8_t sample_time = 5;
 uint32_t time, last_time;
 
 // Initialization of Odometry
-Odometry odom(1633, 20, 7.5, 1);
+Odometry odom(1633, 20, 22, 1);
 
 
 void setup() {

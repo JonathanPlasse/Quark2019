@@ -8,7 +8,7 @@
 class Odometry {
 public:
   // Initialisation of the Odometry class
-  Odometry(uint32_t resolution, float center_distance, float wheel_diameter,
+  Odometry(uint32_t resolution, float center_distance, float wheel_perimeter,
     float ratio);
 
   // Update odometry
@@ -28,7 +28,7 @@ private:
   float _center_distance;
 
   // Wheel diameter
-  float _wheel_diameter;
+  float _wheel_perimeter;
 
   // Wheel diameter ratio (left/right)
   float _ratio;
