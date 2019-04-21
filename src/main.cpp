@@ -15,17 +15,17 @@ Encoder encoder2(ENC2_PIN1, ENC2_PIN2);
 
 // Initialization of the RST setting
 const uint8_t order = 2;
-float r1[order+1] = {17.66, -31.48, 14.01};
-float s1[order+1] = {1., -0.7265 -0.2735};
-float t1[order+1] = {2.466, -2.275, 0};
-float r2[order+1] = {19.94, -35.67, 15.94};
-float s2[order+1] = {1., -0.7262, -0.2738};
-float t2[order+1] = {2.784, -2.587, 0};
-float min_control = -255, max_control = 255;
+float r1[order+1] = {13.43, -23.65, 10.40};
+float s1[order+1] = {1., -0.7278, -0.2722};
+float t1[order+1] = {1.877, -1.689, 0.};
+float r2[order+1] = {15.04, -26.56, 11.71};
+float s2[order+1] = {1., -0.7275, -0.2725};
+float t2[order+1] = {2.102, -1.902, 0.};
+float min_control = -200, max_control = 200;
 
 // Initialization of the system variables
-float reference1 = 1633*10, measurement1, control1;
-float reference2 = 1633*10, measurement2, control2;
+float reference1 = 1633*1, measurement1, last_measurement1 = 0, control1;
+float reference2 = 1633*1, measurement2, last_measurement2 = 0, control2;
 
 // Initialization of the RST
 Rst rst1(&reference1, &measurement1, &control1, min_control, max_control);
@@ -49,13 +49,13 @@ void setup() {
 
   // Run the step_response
   // step_response(&motor1, &encoder1);
-  step_response(&motor2, &encoder2);
+  // step_response(&motor2, &encoder2);
 }
 
 
 void loop() {
   // Execute timer
-  // timer(millis(), sample_time);
+  timer(millis(), sample_time);
 }
 
 
@@ -73,6 +73,8 @@ void timer(uint32_t time, uint8_t sample_time) {
 
 void control_system() {
   // Read motor position
+  last_measurement1 = measurement1;
+  last_measurement2 = measurement2;
   measurement1 = encoder1.read();
   measurement2 = encoder2.read();
 

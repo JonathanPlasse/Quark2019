@@ -1,6 +1,0 @@
-motor2:
-  - tau: 95
-  - k: 48
-motor1:
-  - tau: 100
-  - k: 45

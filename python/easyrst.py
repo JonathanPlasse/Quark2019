@@ -44,7 +44,9 @@ def calculate_rst(b_minus, b_plus, a_minus, a_plus, a_m,
     s = P.polymul(s2, P.polymul(b_plus, perturbation))
     t = P.polymul(t0, a_plus)
 
-    print(r, s, t)
+    print("R = ", ", ".join(map(str, r)))
+    print("S = ", ", ".join(map(str, s)))
+    print("T = ", ", ".join(map(str, t)))
 
     return r, s, t
 
@@ -98,12 +100,12 @@ class EasyRst(QWidget):
 
     def initControl(self):
         self.ts = 0.01
-        # Left motor
-        # self.k = 47.1
-        # self.tau = 0.124
         # Right motor
-        self.k = 45.6
-        self.tau = 0.136
+        self.k = 45
+        self.tau = 0.100
+        # Left motor
+        # self.k = 48
+        # self.tau = 0.095
 
         self.gd = cnt.tf(self.k, [self.tau, 1, 0]).sample(self.ts)
 
