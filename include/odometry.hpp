@@ -2,12 +2,12 @@
 #define ODOMETRY_HPP
 
 #include <stdint.h>
-#include "position.h"
+#include "position.hpp"
 
 // Calculate the position of the robot
 class Odometry {
 public:
-  // Initialisation of the Odometry class
+  // Initialize Odometry class
   Odometry(uint32_t resolution, float center_distance, float wheel_perimeter,
     float ratio);
 

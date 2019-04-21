@@ -14,6 +14,7 @@ void Odometry::update(float left_step, float right_step) {
   float rotation = (-left_distance + right_distance) / _center_distance;
 
   _position.theta += rotation;
+  _position.theta = pi_modulo(_position.theta);
   _position.x += cos(_position.theta) * translation;
   _position.y += sin(_position.theta) * translation;
 }

@@ -8,4 +8,6 @@ typedef struct {
   float theta;
 } position_t;
 
+float pi_modulo(float angle);
+
 #endif
