@@ -11,7 +11,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg\
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT\
                                         as NavigationToolbar
 from matplotlib.figure import Figure
-import matplotlib
 from scipy.optimize import leastsq
 import numpy as np
 import yaml
