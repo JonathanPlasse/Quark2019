@@ -17,8 +17,6 @@ import numpy as np
 import yaml
 from binserial import BinSerial
 
-matplotlib.use('Qt5Agg')
-
 
 def f(t, k, tau):
     return k * (1 - np.exp(-t / tau))

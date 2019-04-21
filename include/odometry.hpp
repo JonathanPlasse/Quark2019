@@ -18,7 +18,7 @@ public:
   const position_t* getPosition() const;
 
   // Set position
-  void setPosition(const position_t* p);
+  void setPosition(const position_t* position);
 
 private:
   // Count per revolution of encoder
@@ -34,7 +34,7 @@ private:
   float _ratio;
 
   // Position
-  position_t _p;
+  position_t _position;
 };
 
 #endif
