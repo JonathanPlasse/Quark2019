@@ -22,6 +22,6 @@ typedef struct {
 } measure_t;
 
 // Execute multiple step response and send the measurement
-bool step_response(Motor* motor, Encoder* encoder, uint8_t* sample_time);
+void step_response(Motor* motor, Encoder* encoder);
 
 #endif

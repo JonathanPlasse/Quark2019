@@ -46,12 +46,16 @@ void setup() {
 
   // Initialize serial connection.
   Serial.begin(115200);
+
+  // Run the step_response
+  step_response(&motor1, &encoder1);
+  // step_response(&motor2, &encoder2);
 }
 
 
 void loop() {
   // Execute timer
-  timer(millis(), sample_time);
+  // timer(millis(), sample_time);
 }
 
 
@@ -62,10 +66,7 @@ void timer(uint32_t time, uint8_t sample_time) {
     // Update last_time
     last_time += sample_time;
 
-    // Run the step_response
-    step_response(&motor1, &encoder1, &sample_time);
-    // step_response(&motor2, &encoder2, &sample_time);
-    // control_system();
+    control_system();
   }
 }
 
