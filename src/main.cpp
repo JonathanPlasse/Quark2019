@@ -48,8 +48,8 @@ void setup() {
   Serial.begin(115200);
 
   // Run the step_response
-  step_response(&motor1, &encoder1);
-  // step_response(&motor2, &encoder2);
+  // step_response(&motor1, &encoder1);
+  step_response(&motor2, &encoder2);
 }
 
 

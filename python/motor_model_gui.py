@@ -182,7 +182,7 @@ class MotorModel(QWidget):
         self.plot()
 
     def compute_regression(self):
-        p0 = np.array([1, 100])
+        p0 = np.array([10000, 80])
 
         self.t = np.arange(0, self.ts * self.nb_sample, self.ts)
 
