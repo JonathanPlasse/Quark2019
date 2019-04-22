@@ -18,4 +18,7 @@ void Setpoint::update() {
   float delta_theta = _setpoint_position->theta - _current_position->theta;
   float delta_translation = sqrtf(delta_x*delta_x + delta_y*delta_y);
   float delta_rotation = atan2f(delta_y, delta_x);
+
+  *_left_control += cm2step(delta_translation) - rad2step(delta_rotation);
+  *_right_control += cm2step(delta_translation) + rad2step(delta_rotation);
 }
