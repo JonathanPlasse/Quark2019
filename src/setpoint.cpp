@@ -19,6 +19,12 @@ void Setpoint::update() {
   float delta_translation = sqrtf(delta_x*delta_x + delta_y*delta_y);
   float delta_rotation = atan2f(delta_y, delta_x);
 
-  *_left_control += cm2step(delta_translation) - rad2step(delta_rotation);
-  *_right_control += cm2step(delta_translation) + rad2step(delta_rotation);
+  if (delta_translation > 2) {
+    *_left_control += cm2step(delta_translation) - rad2step(delta_rotation);
+    *_right_control += cm2step(delta_translation) + rad2step(delta_rotation);
+  }
+  else {
+    *_left_control += 0;
+    *_right_control += 0;
+  }
 }

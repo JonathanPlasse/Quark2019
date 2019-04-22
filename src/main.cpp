@@ -42,7 +42,7 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {10, 0, 0};
+position_t setpoint_position = {100, 0, 0};
 Setpoint setpoint(&control1, &control2);
 
 void setup() {
@@ -104,6 +104,8 @@ void control_system() {
   // Compute control command
   rst1.compute();
   rst2.compute();
+
+  setpoint.update();
 
   // Apply the control on the motors
   motor1.set_pwm(control1);
