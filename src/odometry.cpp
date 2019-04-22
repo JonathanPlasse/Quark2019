@@ -16,10 +16,10 @@ void Odometry::update(float left_step, float right_step) {
   _position.y += sin(_position.theta) * translation;
 }
 
-const position_t* Odometry::getPosition() const {
+const position_t* Odometry::get_position() const {
   return &_position;
 }
 
-void Odometry::setPosition(const position_t* position) {
+void Odometry::set_position(const position_t* position) {
   _position = *position;
 }

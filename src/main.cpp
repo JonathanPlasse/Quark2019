@@ -6,6 +6,7 @@
 #include "rst.hpp"
 #include "odometry.hpp"
 #include "binary_serial.hpp"
+#include "setpoint.hpp"
 
 // Initialization of the motors
 Motor motor1(M1_DIR1, M1_DIR2, M1_PWM);
@@ -38,8 +39,11 @@ uint8_t sample_time = 5;
 uint32_t time, last_time;
 
 // Initialization of Odometry
-Odometry odom;
+Odometry odometry;
 
+// Initialization of Setpoint
+position_t setpoint_position = {10, 0, 0};
+Setpoint setpoint(&control1, &control2);
 
 void setup() {
   // Change the frequency of the pwm.
@@ -55,6 +59,10 @@ void setup() {
   // Run the step_response
   // step_response(&motor1, &encoder1);
   // step_response(&motor2, &encoder2);
+
+  // Set position pointer to Setpoint
+  setpoint.set_current_position(odometry.get_position());
+  setpoint.set_setpoint_position(&setpoint_position);
 }
 
 
@@ -84,11 +92,11 @@ void control_system() {
   measurement2 = encoder2.read();
 
   // Odometry
-  odom.update(measurement1 - last_measurement1,
+  odometry.update(measurement1 - last_measurement1,
               measurement2 - last_measurement2);
   static uint8_t c = 100;
   if (c++ == 100) {
-    write_data(odom.getPosition(), sizeof(position_t));
+    write_data(odometry.get_position(), sizeof(position_t));
     c = 0;
   }
 

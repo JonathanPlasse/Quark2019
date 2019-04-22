@@ -22,7 +22,6 @@ private:
   float* _right_control;
   const position_t* _current_position;
   const position_t* _setpoint_position;
-
 };
 
 #endif

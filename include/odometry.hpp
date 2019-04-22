@@ -14,10 +14,10 @@ public:
   void update(float left_step, float right_step);
 
   // Get position
-  const position_t* getPosition() const;
+  const position_t* get_position() const;
 
   // Set position
-  void setPosition(const position_t* position);
+  void set_position(const position_t* position);
 
 private:
   // Position
