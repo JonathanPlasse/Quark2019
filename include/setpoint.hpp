@@ -20,8 +20,8 @@ public:
 private:
   float* _left_control;
   float* _right_control;
-  position_t* _current_position;
-  position_t* _setpoint_position;
+  const position_t* _current_position;
+  const position_t* _setpoint_position;
 
 };
 

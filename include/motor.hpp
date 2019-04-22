@@ -15,7 +15,7 @@ public:
   void set_pwm(int16_t pwm);
 
 private:
-  uint8_t _dir_pin1, _dir_pin2, _pwm_pin;
+  const uint8_t _dir_pin1, _dir_pin2, _pwm_pin;
   float _pwm;
 };
 
