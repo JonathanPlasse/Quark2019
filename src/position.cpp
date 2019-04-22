@@ -12,3 +12,19 @@ float pi_modulo(float angle)
     }
     return angle;
 }
+
+float step2cm(float step) {
+  return step * wheel_perimeter / resolution;
+}
+
+float cm2step(float cm) {
+  return cm / wheel_perimeter * resolution;
+}
+
+float step2rad(float step) {
+  return step * M_PI / resolution;
+}
+
+float rad2step(float rad) {
+  return rad / M_PI * resolution;
+}

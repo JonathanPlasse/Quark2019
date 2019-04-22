@@ -8,8 +8,7 @@
 class Odometry {
 public:
   // Initialize Odometry class
-  Odometry(uint32_t resolution, float center_distance, float wheel_perimeter,
-    float wheel_ratio);
+  Odometry();
 
   // Update odometry
   void update(float left_step, float right_step);
@@ -21,18 +20,6 @@ public:
   void setPosition(const position_t* position);
 
 private:
-  // Count per revolution of encoder
-  uint32_t _resolution;
-
-  // Center distance between the two wheel
-  float _center_distance;
-
-  // Wheel diameter
-  float _wheel_perimeter;
-
-  // Wheel diameter ratio (left/right)
-  float _wheel_ratio;
-
   // Position
   position_t _position;
 };

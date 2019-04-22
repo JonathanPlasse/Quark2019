@@ -38,7 +38,7 @@ uint8_t sample_time = 5;
 uint32_t time, last_time;
 
 // Initialization of Odometry
-Odometry odom(1633, 20, 22, 1);
+Odometry odom;
 
 
 void setup() {
