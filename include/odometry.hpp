@@ -9,7 +9,7 @@ class Odometry {
 public:
   // Initialize Odometry class
   Odometry(uint32_t resolution, float center_distance, float wheel_perimeter,
-    float ratio);
+    float wheel_ratio);
 
   // Update odometry
   void update(float left_step, float right_step);
@@ -31,7 +31,7 @@ private:
   float _wheel_perimeter;
 
   // Wheel diameter ratio (left/right)
-  float _ratio;
+  float _wheel_ratio;
 
   // Position
   position_t _position;
