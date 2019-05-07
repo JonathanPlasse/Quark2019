@@ -46,11 +46,11 @@ void Rst::compute() {
   if ((fabsf(_reference_hist[0] - _measurement_hist[0]) < _error_threshold)
    && (fabsf(_control_hist[0]) < _pwm_threshold)
    && (_reference_hist[0] == _reference_hist[1])) {
-    // _control_hist[0] = 0;
+    _control_hist[0] = 0;
   }
 
   // Compute final control signal
-  for (int i = 0 ; i <= _order ; i++) {
+  for (int i = 1 ; i <= _order ; i++) {
     _control_hist[0] -= _s[i]*_control_hist[i];
   }
 

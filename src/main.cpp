@@ -28,7 +28,7 @@ float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 
 float min_control = -200, max_control = 200;
 
-float error_threshold = 0, _pwm_threshold = 0;
+float error_threshold = 10, _pwm_threshold = 150;
 
 // Initialization of the system variables
 float reference1 = -1633*1, measurement1, last_measurement1 = 0, control1;
