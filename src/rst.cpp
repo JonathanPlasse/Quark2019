@@ -1,9 +1,12 @@
 #include "rst.hpp"
+#include "math.h"
 
 Rst::Rst(float* reference, float* measurement, float* control,
-         float min_control, float max_control) :
+         float min_control, float max_control,
+         float error_threshold, float pwm_threshold) :
 _reference(reference), _measurement(measurement), _control(control),
-_min_control(min_control), _max_control(max_control) {
+_min_control(min_control), _max_control(max_control),
+_error_threshold(error_threshold), _pwm_threshold(pwm_threshold) {
   reset();
 }
 
@@ -32,12 +35,23 @@ void Rst::compute() {
   _reference_hist[0] = *_reference;
   _measurement_hist[0] = *_measurement;
 
-  // Compute control signal
+  // Compute partial control signal
   _control_hist[0] = 0;
   for (int i = 0 ; i <= _order ; i++) {
     _control_hist[0] += _t[i]*_reference_hist[i]
-                      - _r[i]*_measurement_hist[i]
-                      - _s[i]*_control_hist[i];
+                      - _r[i]*_measurement_hist[i];
+  }
+
+  // Control signal dead zone before integration to avoid limit cycle
+  if ((fabsf(_reference_hist[0] - _measurement_hist[0]) < _error_threshold)
+   && (fabsf(_control_hist[0]) < _pwm_threshold)
+   && (_reference_hist[0] == _reference_hist[1])) {
+    // _control_hist[0] = 0;
+  }
+
+  // Compute final control signal
+  for (int i = 0 ; i <= _order ; i++) {
+    _control_hist[0] -= _s[i]*_control_hist[i];
   }
 
   // Sature control signal

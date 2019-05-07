@@ -18,21 +18,27 @@ Encoder encoder2(ENC2_PIN1, ENC2_PIN2);
 
 // Initialization of the RST setting
 const uint8_t order = 2;
+
 float r1[order+1] = {52.38595863564986, -94.7719172712997, 42.76095863564984};
 float s1[order+1] = {1.0, -0.7251297263184233, -0.2748702736815767};
 float t1[order+1] = {7.314144660912829, -6.939144660912829, 0.};
 float r2[order+1] = {58.744438426449506, -106.42221018623232, 48.07777175978282};
 float s2[order+1] = {1.0, -0.7249983334697319, -0.2750016665302681};
 float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
+
 float min_control = -200, max_control = 200;
+
+float error_threshold = 0, _pwm_threshold = 0;
 
 // Initialization of the system variables
 float reference1 = -1633*1, measurement1, last_measurement1 = 0, control1;
 float reference2 = 1633*1, measurement2, last_measurement2 = 0, control2;
 
 // Initialization of the RST
-Rst rst1(&reference1, &measurement1, &control1, min_control, max_control);
-Rst rst2(&reference2, &measurement2, &control2, min_control, max_control);
+Rst rst1(&reference1, &measurement1, &control1, min_control, max_control,
+         error_threshold, _pwm_threshold);
+Rst rst2(&reference2, &measurement2, &control2, min_control, max_control,
+         error_threshold, _pwm_threshold);
 
 // Initialization for the timer
 uint8_t sample_time = 5;
@@ -61,8 +67,8 @@ void setup() {
   // step_response(&motor2, &encoder2);
 
   // Set position pointer to Setpoint
-  setpoint.set_current_position(odometry.get_position());
-  setpoint.set_setpoint_position(&setpoint_position);
+  // setpoint.set_current_position(odometry.get_position());
+  // setpoint.set_setpoint_position(&setpoint_position);
 }
 
 
@@ -105,7 +111,8 @@ void control_system() {
   rst1.compute();
   rst2.compute();
 
-  setpoint.update();
+  // Update setpoint
+  // setpoint.update();
 
   // Apply the control on the motors
   motor1.set_pwm(control1);
