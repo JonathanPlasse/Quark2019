@@ -67,8 +67,8 @@ void setup() {
   // step_response(&motor2, &encoder2);
 
   // Set position pointer to Setpoint
-  // setpoint.set_current_position(odometry.get_position());
-  // setpoint.set_setpoint_position(&setpoint_position);
+  setpoint.set_current_position(odometry.get_position());
+  setpoint.set_setpoint_position(&setpoint_position);
 }
 
 
@@ -103,6 +103,8 @@ void control_system() {
   static uint8_t c = 100;
   if (c++ == 100) {
     write_data(odometry.get_position(), sizeof(position_t));
+    write_data(&control1, sizeof(control1));
+    write_data(&control2, sizeof(control2));
     c = 0;
   }
 
@@ -112,7 +114,7 @@ void control_system() {
   rst2.compute();
 
   // Update setpoint
-  // setpoint.update();
+  setpoint.update();
 
   // Apply the control on the motors
   motor1.set_pwm(control1);
