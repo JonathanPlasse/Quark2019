@@ -49,7 +49,7 @@ Odometry odometry;
 
 // Initialization of Setpoint
 position_t setpoint_position = {100, 0, 0};
-Setpoint setpoint(&control1, &control2);
+Setpoint setpoint(&control1, &control2, &measurement1, &measurement2);
 
 void setup() {
   // Change the frequency of the pwm.
@@ -103,8 +103,6 @@ void control_system() {
   static uint8_t c = 100;
   if (c++ == 100) {
     write_data(odometry.get_position(), sizeof(position_t));
-    write_data(&control1, sizeof(control1));
-    write_data(&control2, sizeof(control2));
     c = 0;
   }
 

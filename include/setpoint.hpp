@@ -6,7 +6,8 @@
 class Setpoint {
 public:
   // Initialize Setpoint class
-  Setpoint(float* left_control, float* right_control);
+  Setpoint(float* left_control, float* right_control,
+    const float* left_measurement, const float* right_measurement);
 
   // Set current_position pointer
   void set_current_position(const position_t* current_position);
@@ -20,6 +21,8 @@ public:
 private:
   float* _left_control;
   float* _right_control;
+  const float* _left_measurement;
+  const float* _right_measurement;
   const position_t* _current_position;
   const position_t* _setpoint_position;
 };
