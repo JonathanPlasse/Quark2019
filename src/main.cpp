@@ -4,6 +4,8 @@
 #include "motor.hpp"
 #include "step_response.hpp"
 #include "rst.hpp"
+#include "control.hpp"
+#include "position.hpp"
 #include "odometry.hpp"
 #include "binary_serial.hpp"
 #include "setpoint.hpp"
@@ -31,13 +33,15 @@ float min_command = -200, max_command = 200;
 float error_threshold = 10, _pwm_threshold = 150;
 
 // Initialization of the system variables
-float reference1 = -1633*1, measurement1, last_measurement1 = 0, command1;
-float reference2 = 1633*1, measurement2, last_measurement2 = 0, command2;
+control_t control1 = {0, 0, 0};
+control_t control2 = {0, 0, 0};
+float last_measurement1 = 0;
+float last_measurement2 = 0;
 
 // Initialization of the RST
-Rst rst1(&reference1, &measurement1, &command1, min_command, max_command,
+Rst rst1(&control1, min_command, max_command,
          error_threshold, _pwm_threshold);
-Rst rst2(&reference2, &measurement2, &command2, min_command, max_command,
+Rst rst2(&control2, min_command, max_command,
          error_threshold, _pwm_threshold);
 
 // Initialization for the timer
@@ -49,7 +53,7 @@ Odometry odometry;
 
 // Initialization of Setpoint
 position_t setpoint_position = {10, 0, 0};
-Setpoint setpoint(&reference1, &reference2, &measurement1, &measurement2);
+Setpoint setpoint(&(control1.reference), &(control2.reference), &(control1.measurement), &(control2.measurement));
 
 void setup() {
   // Change the frequency of the pwm.
@@ -92,14 +96,14 @@ void timer(uint32_t time, uint8_t sample_time) {
 
 void control_system() {
   // Read motor position
-  last_measurement1 = measurement1;
-  last_measurement2 = measurement2;
-  measurement1 = encoder1.read();
-  measurement2 = encoder2.read();
+  last_measurement1 = control1.measurement;
+  last_measurement2 = control2.measurement;
+  control1.measurement = encoder1.read();
+  control2.measurement = encoder2.read();
 
   // Odometry
-  odometry.update(measurement1 - last_measurement1,
-              measurement2 - last_measurement2);
+  odometry.update(control1.measurement - last_measurement1,
+              control2.measurement - last_measurement2);
 
   // Debug
   // static uint8_t c = 100;
@@ -117,6 +121,6 @@ void control_system() {
   rst2.compute();
 
   // Apply the command on the motors
-  motor1.set_pwm(command1);
-  motor2.set_pwm(command2);
+  motor1.set_pwm(control1.command);
+  motor2.set_pwm(control2.command);
 }

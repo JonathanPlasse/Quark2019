@@ -1,10 +1,10 @@
 #include "rst.hpp"
 #include "math.h"
 
-Rst::Rst(float* reference, float* measurement, float* command,
+Rst::Rst(control_t* control,
          float min_command, float max_command,
          float error_threshold, float pwm_threshold) :
-_reference(reference), _measurement(measurement), _command(command),
+_control(control),
 _min_command(min_command), _max_command(max_command),
 _error_threshold(error_threshold), _pwm_threshold(pwm_threshold) {
   reset();
@@ -32,8 +32,8 @@ void Rst::compute() {
     _measurement_hist[_order-i] = _measurement_hist[_order-i-1];
     _command_hist[_order-i] = _command_hist[_order-i-1];
   }
-  _reference_hist[0] = *_reference;
-  _measurement_hist[0] = *_measurement;
+  _reference_hist[0] = _control->reference;
+  _measurement_hist[0] = _control->measurement;
 
   // Compute partial command signal
   _command_hist[0] = 0;
@@ -61,5 +61,5 @@ void Rst::compute() {
     _command_hist[0] = _min_command;
 
   // Update command signal
-  *_command = _command_hist[0];
+  _control->command = _command_hist[0];
 }

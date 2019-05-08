@@ -2,13 +2,14 @@
 #define RTS_HPP
 
 #include <stdint.h>
+#include "control.hpp"
 
 #define MAX_RST_ORDER 4
 
 class Rst {
 public:
   // Initialize Rst class.
-  Rst(float* reference, float* measurement, float* command,
+  Rst(control_t* control,
       float min_command, float max_command,
       float error_threshold, float pwm_threshold);
 
@@ -23,9 +24,7 @@ public:
 
 private:
   // System variable
-  float* _reference;
-  float* _measurement;
-  float* _command;
+  control_t* _control;
 
   // Control signal interval
   float _min_command;
