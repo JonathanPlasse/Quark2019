@@ -2,12 +2,12 @@
 #define SETPOINT_HPP
 
 #include "position.hpp"
+#include "control.hpp"
 
 class Setpoint {
 public:
   // Initialize Setpoint class
-  Setpoint(float* left_reference, float* right_reference,
-    const float* left_measurement, const float* right_measurement);
+  Setpoint(control_t* left_control, control_t* right_control);
 
   // Set current_position pointer
   void set_current_position(const position_t* current_position);
@@ -19,10 +19,8 @@ public:
   void update();
 
 private:
-  float* _left_reference;
-  float* _right_reference;
-  const float* _left_measurement;
-  const float* _right_measurement;
+  control_t* _left_control;
+  control_t* _right_control;
   const position_t* _current_position;
   const position_t* _setpoint_position;
 };

@@ -22,6 +22,8 @@ public:
 private:
   // Position
   position_t _position;
+  float _last_left_step;
+  float _last_right_step;
 };
 
 #endif

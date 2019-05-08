@@ -35,8 +35,6 @@ float error_threshold = 10, _pwm_threshold = 150;
 // Initialization of the system variables
 control_t control1 = {0, 0, 0};
 control_t control2 = {0, 0, 0};
-float last_measurement1 = 0;
-float last_measurement2 = 0;
 
 // Initialization of the RST
 Rst rst1(&control1, min_command, max_command,
@@ -53,7 +51,7 @@ Odometry odometry;
 
 // Initialization of Setpoint
 position_t setpoint_position = {10, 0, 0};
-Setpoint setpoint(&(control1.reference), &(control2.reference), &(control1.measurement), &(control2.measurement));
+Setpoint setpoint(&control1, &control2);
 
 void setup() {
   // Change the frequency of the pwm.
@@ -96,14 +94,11 @@ void timer(uint32_t time, uint8_t sample_time) {
 
 void control_system() {
   // Read motor position
-  last_measurement1 = control1.measurement;
-  last_measurement2 = control2.measurement;
   control1.measurement = encoder1.read();
   control2.measurement = encoder2.read();
 
   // Odometry
-  odometry.update(control1.measurement - last_measurement1,
-              control2.measurement - last_measurement2);
+  odometry.update(control1.measurement, control2.measurement);
 
   // Debug
   // static uint8_t c = 100;
