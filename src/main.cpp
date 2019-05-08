@@ -26,18 +26,18 @@ float r2[order+1] = {58.744438426449506, -106.42221018623232, 48.07777175978282}
 float s2[order+1] = {1.0, -0.7249983334697319, -0.2750016665302681};
 float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 
-float min_control = -200, max_control = 200;
+float min_command = -200, max_command = 200;
 
 float error_threshold = 10, _pwm_threshold = 150;
 
 // Initialization of the system variables
-float reference1 = -1633*1, measurement1, last_measurement1 = 0, control1;
-float reference2 = 1633*1, measurement2, last_measurement2 = 0, control2;
+float reference1 = -1633*1, measurement1, last_measurement1 = 0, command1;
+float reference2 = 1633*1, measurement2, last_measurement2 = 0, command2;
 
 // Initialization of the RST
-Rst rst1(&reference1, &measurement1, &control1, min_control, max_control,
+Rst rst1(&reference1, &measurement1, &command1, min_command, max_command,
          error_threshold, _pwm_threshold);
-Rst rst2(&reference2, &measurement2, &control2, min_control, max_control,
+Rst rst2(&reference2, &measurement2, &command2, min_command, max_command,
          error_threshold, _pwm_threshold);
 
 // Initialization for the timer
@@ -48,8 +48,8 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {100, 0, 0};
-Setpoint setpoint(&control1, &control2, &measurement1, &measurement2);
+position_t setpoint_position = {10, 0, 0};
+Setpoint setpoint(&reference1, &reference2, &measurement1, &measurement2);
 
 void setup() {
   // Change the frequency of the pwm.
@@ -100,21 +100,23 @@ void control_system() {
   // Odometry
   odometry.update(measurement1 - last_measurement1,
               measurement2 - last_measurement2);
-  static uint8_t c = 100;
-  if (c++ == 100) {
-    write_data(odometry.get_position(), sizeof(position_t));
-    c = 0;
-  }
 
+  // Debug
+  // static uint8_t c = 100;
+  // if (c++ == 100) {
+  //   write_data(odometry.get_position(), sizeof(position_t));
+  //   write_data(setpoint_position, sizeof(position_t));
+  //   c = 0;
+  // }
+
+  // Update setpoint
+  setpoint.update();
 
   // Compute control command
   rst1.compute();
   rst2.compute();
 
-  // Update setpoint
-  setpoint.update();
-
-  // Apply the control on the motors
-  motor1.set_pwm(control1);
-  motor2.set_pwm(control2);
+  // Apply the command on the motors
+  motor1.set_pwm(command1);
+  motor2.set_pwm(command2);
 }

@@ -8,8 +8,8 @@
 class Rst {
 public:
   // Initialize Rst class.
-  Rst(float* reference, float* measurement, float* control,
-      float min_control, float max_control,
+  Rst(float* reference, float* measurement, float* command,
+      float min_command, float max_command,
       float error_threshold, float pwm_threshold);
 
   // Set rst polynomials coefficient.
@@ -18,18 +18,18 @@ public:
   // Initialize rst history.
   void reset();
 
-  // Compute control.
+  // Compute command.
   void compute();
 
 private:
   // System variable
   float* _reference;
   float* _measurement;
-  float* _control;
+  float* _command;
 
   // Control signal interval
-  float _min_control;
-  float _max_control;
+  float _min_command;
+  float _max_command;
 
   // Thresholds
   float _error_threshold;
@@ -38,7 +38,7 @@ private:
   // System variable history
   float _reference_hist[MAX_RST_ORDER+1];
   float _measurement_hist[MAX_RST_ORDER+1];
-  float _control_hist[MAX_RST_ORDER+1];
+  float _command_hist[MAX_RST_ORDER+1];
 
   // Order of the rst controller
   uint8_t _order;

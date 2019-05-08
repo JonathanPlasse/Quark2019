@@ -6,7 +6,7 @@
 class Setpoint {
 public:
   // Initialize Setpoint class
-  Setpoint(float* left_control, float* right_control,
+  Setpoint(float* left_reference, float* right_reference,
     const float* left_measurement, const float* right_measurement);
 
   // Set current_position pointer
@@ -15,12 +15,12 @@ public:
   // Set setpoint_position pointer
   void set_setpoint_position(const position_t* setpoint_position);
 
-  // Update control
+  // Update reference
   void update();
 
 private:
-  float* _left_control;
-  float* _right_control;
+  float* _left_reference;
+  float* _right_reference;
   const float* _left_measurement;
   const float* _right_measurement;
   const position_t* _current_position;
