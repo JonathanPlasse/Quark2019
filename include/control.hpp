@@ -8,4 +8,6 @@ typedef struct {
   float command;
 } control_t;
 
+float speed(const control_t* control, const control_t* last_control, float deltat_t);
+
 #endif

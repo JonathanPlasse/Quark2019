@@ -16,7 +16,7 @@ public:
   void set_setpoint_position(const position_t* setpoint_position);
 
   // Update reference
-  void update();
+  void update(float left_speed, float right_speed);
 
 private:
   control_t* _left_control;

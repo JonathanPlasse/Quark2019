@@ -6,4 +6,4 @@ from binserial import BinSerial
 if __name__ == "__main__":
     bser = BinSerial("/dev/ttyACM0", 115200)
     while True:
-        print(bser.read(['float']*4))
+        print(bser.read(['float']*3))

@@ -30,17 +30,18 @@ float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 
 float min_command = -200, max_command = 200;
 
-float error_threshold = 10, _pwm_threshold = 150;
+float error_threshold = 50, pwm_threshold = 150;
 
 // Initialization of the system variables
-control_t control1 = {0, 0, 0};
-control_t control2 = {0, 0, 0};
+control_t control1 = {0, 0, 0}, last_control1 = {0, 0, 0};
+control_t control2 = {0, 0, 0}, last_control2 = {0, 0, 0};
+
 
 // Initialization of the RST
 Rst rst1(&control1, min_command, max_command,
-         error_threshold, _pwm_threshold);
+         error_threshold, pwm_threshold);
 Rst rst2(&control2, min_command, max_command,
-         error_threshold, _pwm_threshold);
+         error_threshold, pwm_threshold);
 
 // Initialization for the timer
 uint8_t sample_time = 5;
@@ -94,6 +95,8 @@ void timer(uint32_t time, uint8_t sample_time) {
 
 void control_system() {
   // Read motor position
+  control1 = last_control1;
+  control2 = last_control2;
   control1.measurement = encoder1.read();
   control2.measurement = encoder2.read();
 
@@ -104,12 +107,15 @@ void control_system() {
   // static uint8_t c = 100;
   // if (c++ == 100) {
   //   write_data(odometry.get_position(), sizeof(position_t));
-  //   write_data(setpoint_position, sizeof(position_t));
+  //   // write_data(setpoint_position, sizeof(position_t));
   //   c = 0;
   // }
 
+
+
   // Update setpoint
-  setpoint.update();
+  setpoint.update(speed(&control1, &last_control1, sample_time),
+                  speed(&control2, &last_control2, sample_time));
 
   // Compute control command
   rst1.compute();
