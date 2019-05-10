@@ -52,7 +52,7 @@ Odometry odometry;
 
 // Initialization of Setpoint
 position_t setpoint_position = {10, 0, 0};
-Setpoint setpoint(&control1, &control2);
+Setpoint setpoint(&control1, &control2, error_threshold);
 
 void setup() {
   // Change the frequency of the pwm.

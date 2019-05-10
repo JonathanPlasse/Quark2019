@@ -1,8 +1,10 @@
 #include "setpoint.hpp"
 #include <math.h>
 
-Setpoint::Setpoint(control_t* left_control, control_t* right_control) :
-_left_control(left_control), _right_control(right_control) {}
+Setpoint::Setpoint(control_t* left_control, control_t* right_control,
+                   float error_threshold) :
+_left_control(left_control), _right_control(right_control),
+_error_threshold(error_threshold) {}
 
 void Setpoint::set_current_position(const position_t* current_position) {
   _current_position = current_position;
