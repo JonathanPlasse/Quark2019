@@ -51,7 +51,7 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {10, 0, 1.57};
+position_t setpoint_position = {0, 0, 1.57};
 Setpoint setpoint(&control1, &control2, error_threshold);
 
 void setup() {
@@ -87,7 +87,8 @@ void timer(uint32_t time, uint8_t sample_time) {
   if (time - last_time > sample_time) {
     // Update last_time
     last_time += sample_time;
-    // setpoint_position.x += 0.1;
+    setpoint_position.x += 0.1;
+    setpoint_position.y += 0.01;
     control_system();
   }
 }
@@ -104,12 +105,12 @@ void control_system() {
   odometry.update(control1.measurement, control2.measurement);
 
   // Debug
-  // static uint8_t c = 100;
-  // if (c++ == 100) {
-  //   write_data(odometry.get_position(), sizeof(position_t));
-  //   // write_data(setpoint_position, sizeof(position_t));
-  //   c = 0;
-  // }
+  static uint8_t c = 100;
+  if (c++ == 100) {
+    write_data(odometry.get_position(), sizeof(position_t));
+    // write_data(setpoint_position, sizeof(position_t));
+    c = 0;
+  }
 
 
 

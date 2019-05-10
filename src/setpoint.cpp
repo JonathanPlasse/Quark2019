@@ -22,21 +22,16 @@ void Setpoint::update(float left_speed, float right_speed) {
   float delta_rotation = atan2f(delta_y, delta_x);
 
   // Update for straignt line
-  // if (delta_translation > 1) {
-  //   _left_control->reference = _left_control->measurement + cm2step(delta_translation)
-  //     - rad2step(delta_rotation);
-  //   _right_control->reference = _right_control->measurement + cm2step(delta_translation)
-  //     + rad2step(delta_rotation);
-  // }
-  // // Remove rotation correction
-  // else if (delta_translation > step2cm(_error_threshold/3)) {
-  //   _left_control->reference = _left_control->measurement + cm2step(delta_translation);
-  //   _right_control->reference = _right_control->measurement + cm2step(delta_translation);
-  // }
+  if (delta_translation > step2cm(_error_threshold/3)) {
+    _left_control->reference = _left_control->measurement + cm2step(delta_translation)
+      - rad2step(delta_rotation) * fminf(1, powf(delta_translation, 3)/10);
+    _right_control->reference = _right_control->measurement + cm2step(delta_translation)
+      + rad2step(delta_rotation) * fminf(1, powf(delta_translation, 3)/10);
+  }
 
   // Update for Orientation
-  if (delta_rotation > 0.5) {
-    _left_control->reference = _left_control->measurement - rad2step(delta_theta);
-    _right_control->reference = _right_control->measurement + rad2step(delta_theta);
-  }
+  // if (delta_rotation > 0.5) {
+  //   _left_control->reference = _left_control->measurement - rad2step(delta_theta);
+  //   _right_control->reference = _right_control->measurement + rad2step(delta_theta);
+  // }
 }
