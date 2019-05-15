@@ -87,7 +87,7 @@ void timer(uint32_t time, uint8_t sample_time) {
   if (time - last_time > sample_time) {
     // Update last_time
     last_time += sample_time;
-    // setpoint_position.x += 0.2;
+    setpoint_position.x += 0.2;
     control_system();
   }
 }
@@ -104,8 +104,8 @@ void control_system() {
   odometry.update(control1.measurement, control2.measurement);
 
   // Debug
-  static uint8_t c = 100;
-  if (c++ == 100) {
+  static uint8_t c = 50;
+  if (c++ == 50) {
     write_data(odometry.get_position(), sizeof(position_t));
     // write_data(setpoint_position, sizeof(position_t));
     c = 0;
