@@ -2,7 +2,7 @@
 #include <math.h>
 
 Setpoint::Setpoint(control_t* left_control, control_t* right_control,
-                   float error_threshold) :
+                   float error_threshold, float sample_time) :
 _left_control(left_control), _right_control(right_control),
 _error_threshold(error_threshold) {}
 
@@ -24,14 +24,24 @@ void Setpoint::update(float left_speed, float right_speed) {
   static float last_delta_translation = 0;
   static float last_delta_rotation = 0;
 
+  // PD coefficients for translation
   const float p_t = 0.1, d_t = 0;
+  // PD coefficients for rotation
   const float p_r = 1, d_r = 0.5;
 
-  // Diminuer la fréquence de l'asservissement
+  // Speed ramp constants
+  const float speed_max = 50, acceleration_max = 50;
+
+  // Problème : oscillation du robot et instabilité
   // Les distances sont trop petites pour avoir un angle correct
-  // Comment augmenter ces distances
+  // Comment augmenter ces distances ?
   // - diminuer p_t : ne fonctionne pas bien
   // - diminuer la fréquence de l'asservissement en position : prometteur
+  // Comment réduire les oscillation ?
+  // - implanter rampe de vitesse
+
+  // Speed ramp
+
 
   // Update for straignt line
   if (delta_translation > step2cm(_error_threshold/3)) {

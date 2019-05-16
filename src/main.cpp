@@ -30,7 +30,7 @@ float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 
 float min_command = -200, max_command = 200;
 
-float error_threshold = 50, pwm_threshold = 150;
+float error_threshold = 30, pwm_threshold = 150;
 
 // Initialization of the system variables
 control_t control1 = {0, 0, 0}, last_control1 = {0, 0, 0};
@@ -51,8 +51,8 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {0, 0, 1.57};
-Setpoint setpoint(&control1, &control2, error_threshold);
+position_t setpoint_position = {10, 0, 0};
+Setpoint setpoint(&control1, &control2, error_threshold, sample_time);
 
 void setup() {
   // Change the frequency of the pwm.
@@ -87,7 +87,7 @@ void timer(uint32_t time, uint8_t sample_time) {
   if (time - last_time > sample_time) {
     // Update last_time
     last_time += sample_time;
-    setpoint_position.x += 0.2;
+    // setpoint_position.x += 0.2;
     control_system();
   }
 }
@@ -104,12 +104,12 @@ void control_system() {
   odometry.update(control1.measurement, control2.measurement);
 
   // Debug
-  static uint8_t c = 50;
-  if (c++ == 50) {
-    write_data(odometry.get_position(), sizeof(position_t));
-    // write_data(setpoint_position, sizeof(position_t));
-    c = 0;
-  }
+  // static uint8_t c = 50;
+  // if (c++ == 50) {
+  //   write_data(odometry.get_position(), sizeof(position_t));
+  //   // write_data(setpoint_position, sizeof(position_t));
+  //   c = 0;
+  // }
 
 
 

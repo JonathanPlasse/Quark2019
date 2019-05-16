@@ -8,7 +8,7 @@ class Setpoint {
 public:
   // Initialize Setpoint class
   Setpoint(control_t* left_control, control_t* right_control,
-           float error_threshold);
+           float error_threshold, float sample_time);
 
   // Set current_position pointer
   void set_current_position(const position_t* current_position);
@@ -23,6 +23,7 @@ private:
   control_t* _left_control;
   control_t* _right_control;
   float _error_threshold;
+  float _sample_time;
   const position_t* _current_position;
   const position_t* _setpoint_position;
 };
