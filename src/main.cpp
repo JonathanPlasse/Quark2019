@@ -9,6 +9,7 @@
 #include "odometry.hpp"
 #include "binary_serial.hpp"
 #include "setpoint.hpp"
+#include "ramp.hpp"
 
 // Initialization of the motors
 Motor left_motor(M1_DIR1, M1_DIR2, M1_PWM);
@@ -30,7 +31,7 @@ float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 
 float min_command = -200, max_command = 200;
 
-float error_threshold = 10, pwm_threshold = 150;
+float error_threshold = 0, pwm_threshold = 150;
 
 // Initialization of the system variables
 control_t left_control = {0, 0, 0}, last_left_control = {0, 0, 0};
@@ -51,9 +52,14 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {0, 0, 1.5};
+position_t setpoint_position = {100, 0, 1.5};
 delta_move_t* delta_move;
 Setpoint setpoint(error_threshold);
+
+Ramp translation_ramp(40, 20, sample_time/1000.);
+Ramp rotation_ramp(4, 2, sample_time/1000.);
+
+float tmp = sample_time/1000.;
 
 void setup() {
   // Change the frequency of the pwm.
@@ -88,7 +94,7 @@ void timer(uint32_t time, uint8_t sample_time) {
   if (time - last_time > sample_time) {
     // Update last_time
     last_time += sample_time;
-    setpoint_position.x += 0.2;
+    // setpoint_position.x += 0.2;
     control_system();
   }
 }
@@ -104,24 +110,26 @@ void control_system() {
   // Odometry
   odometry.update(left_control.measurement, right_control.measurement);
 
-  // Debug
-  static uint8_t c = 50;
-  if (c++ == 50) {
-    write_data(odometry.get_position(), sizeof(position_t));
-    // write_data(setpoint_position, sizeof(position_t));
-    c = 0;
-  }
-
-
-
   // Update setpoint
   delta_move = setpoint.update();
 
+  translation_ramp.compute(&delta_move->delta_translation);
+  rotation_ramp.compute(&delta_move->delta_rotation);
+
+  // Debug
+  static uint8_t c = 50;
+  if (c++ == 50) {
+    // write_data(odometry.get_position(), sizeof(position_t));
+    // write_data(setpoint_position, sizeof(position_t));
+    write_data(delta_move, sizeof(delta_move_t));
+    c = 0;
+  }
+
   // Update reference
   left_control.reference = left_control.measurement
-    + cm2step(delta_move->delta_translation) - rad2step(delta_move->delta_rotation);
+    + cm2step(delta_move->delta_translation)*5 - rad2step(delta_move->delta_rotation)*2;
   right_control.reference = right_control.measurement
-    + cm2step(delta_move->delta_translation) + rad2step(delta_move->delta_rotation);
+    + cm2step(delta_move->delta_translation)*5 + rad2step(delta_move->delta_rotation)*2;
 
   // Compute control command
   left_rst.compute();
