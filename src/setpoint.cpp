@@ -13,6 +13,10 @@ void Setpoint::set_setpoint_position(const position_t* setpoint_position) {
   _state = ORIENT;
 }
 
+bool Setpoint::isStoped() const {
+  return _state == STOP;
+}
+
 delta_move_t* Setpoint::update() {
   float delta_x = _setpoint_position->x - _current_position->x;
   float delta_y = _setpoint_position->y - _current_position->y;

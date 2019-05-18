@@ -17,6 +17,9 @@ public:
   // Set setpoint_position pointer
   void set_setpoint_position(const position_t* setpoint_position);
 
+  // Return if stoped
+  bool isStoped() const;
+
   // Update reference
   delta_move_t* update();
 

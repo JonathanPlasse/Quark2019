@@ -52,7 +52,8 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {20, 20, 0};
+uint8_t i_position = 0;
+position_t setpoint_position[4] = {{20, 0, 0}, {20, 20, 1.57}, {0, 20, 3.14}, {0, 0, -1.57}};
 delta_move_t* delta_move;
 Setpoint setpoint(error_threshold);
 
@@ -78,7 +79,7 @@ void setup() {
 
   // Set position pointer to Setpoint
   setpoint.set_current_position(odometry.get_position());
-  setpoint.set_setpoint_position(&setpoint_position);
+  setpoint.set_setpoint_position(&setpoint_position[i_position]);
 }
 
 
@@ -110,6 +111,11 @@ void control_system() {
   // Odometry
   odometry.update(left_control.measurement, right_control.measurement);
 
+  // Update goal point
+  if (setpoint.isStoped()) {
+    i_position = (i_position+1)%4;
+    setpoint.set_setpoint_position(&setpoint_position[i_position]);
+  }
   // Update setpoint
   delta_move = setpoint.update();
 
