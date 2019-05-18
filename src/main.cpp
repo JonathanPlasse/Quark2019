@@ -30,7 +30,7 @@ float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 
 float min_command = -200, max_command = 200;
 
-float error_threshold = 30, pwm_threshold = 150;
+float error_threshold = 50, pwm_threshold = 150;
 
 // Initialization of the system variables
 control_t control1 = {0, 0, 0}, last_control1 = {0, 0, 0};
@@ -52,7 +52,7 @@ Odometry odometry;
 
 // Initialization of Setpoint
 position_t setpoint_position = {10, 0, 0};
-Setpoint setpoint(&control1, &control2, error_threshold, sample_time);
+Setpoint setpoint(&control1, &control2, error_threshold, sample_time/1000.);
 
 void setup() {
   // Change the frequency of the pwm.
@@ -114,8 +114,8 @@ void control_system() {
 
 
   // Update setpoint
-  setpoint.update(speed(&control1, &last_control1, sample_time),
-                  speed(&control2, &last_control2, sample_time));
+  setpoint.update(speed(&control1, &last_control1, sample_time/1000.),
+                  speed(&control2, &last_control2, sample_time/1000.));
 
   // Compute control command
   rst1.compute();
