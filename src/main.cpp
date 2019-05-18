@@ -52,7 +52,7 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {500, 0, 2};
+position_t setpoint_position = {20, 20, 0};
 delta_move_t* delta_move;
 Setpoint setpoint(error_threshold);
 
@@ -119,8 +119,8 @@ void control_system() {
   // Debug
   static uint8_t c = 50;
   if (c++ == 50) {
-    write_data(odometry.get_position(), sizeof(position_t));
-    // write_data(setpoint_position, sizeof(position_t));
+    // write_data(odometry.get_position(), sizeof(position_t));
+    write_data(&setpoint_position, sizeof(position_t));
     // write_data(delta_move, sizeof(delta_move_t));
     c = 0;
   }

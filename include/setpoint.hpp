@@ -4,6 +4,8 @@
 #include "position.hpp"
 #include "control.hpp"
 
+typedef enum {STOP, ORIENT, MOVE, TURN} State;
+
 class Setpoint {
 public:
   // Initialize Setpoint class
@@ -23,6 +25,7 @@ private:
   const position_t* _current_position;
   const position_t* _setpoint_position;
   delta_move_t _delta_move;
+  State _state;
 };
 
 #endif

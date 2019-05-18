@@ -7,7 +7,7 @@
 const uint32_t resolution = 1633;
 
 // Center distance between the two wheel
-const float center_distance = 19.5;
+const float center_distance = 19.65;
 
 // Wheel diameter
 const float wheel_perimeter = 23.3;
