@@ -25,10 +25,13 @@ delta_move_t* Setpoint::update() {
     _delta_move.delta_rotation = 0;
   }
 
-  // if ()
-  //
   // _delta_move.delta_translation = 0;
   // _delta_move.delta_rotation = delta_theta;
+  //
+  // if (_delta_move.delta_rotation <= 0.05) {
+  //   _delta_move.delta_translation = 0;
+  //   _delta_move.delta_rotation = 0;
+  // }
 
   return &_delta_move;
 }

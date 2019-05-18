@@ -52,12 +52,12 @@ uint32_t time, last_time;
 Odometry odometry;
 
 // Initialization of Setpoint
-position_t setpoint_position = {100, 0, 1.5};
+position_t setpoint_position = {500, 0, 2};
 delta_move_t* delta_move;
 Setpoint setpoint(error_threshold);
 
-Ramp translation_ramp(40, 20, sample_time/1000.);
-Ramp rotation_ramp(4, 2, sample_time/1000.);
+Ramp translation_ramp(100, 100, sample_time/1000.);
+Ramp rotation_ramp(10, 8, sample_time/1000.);
 
 float tmp = sample_time/1000.;
 
@@ -119,17 +119,17 @@ void control_system() {
   // Debug
   static uint8_t c = 50;
   if (c++ == 50) {
-    // write_data(odometry.get_position(), sizeof(position_t));
+    write_data(odometry.get_position(), sizeof(position_t));
     // write_data(setpoint_position, sizeof(position_t));
-    write_data(delta_move, sizeof(delta_move_t));
+    // write_data(delta_move, sizeof(delta_move_t));
     c = 0;
   }
 
   // Update reference
   left_control.reference = left_control.measurement
-    + cm2step(delta_move->delta_translation)*5 - rad2step(delta_move->delta_rotation)*2;
+    + cm2step(delta_move->delta_translation)*5 - rad2step(delta_move->delta_rotation)*5;
   right_control.reference = right_control.measurement
-    + cm2step(delta_move->delta_translation)*5 + rad2step(delta_move->delta_rotation)*2;
+    + cm2step(delta_move->delta_translation)*5 + rad2step(delta_move->delta_rotation)*5;
 
   // Compute control command
   left_rst.compute();

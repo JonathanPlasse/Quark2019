@@ -13,7 +13,7 @@ const float center_distance = 20;
 const float wheel_perimeter = 22;
 
 // Wheel diameter ratio (left/right)
-const float wheel_ratio = 1;
+const float wheel_ratio = 1.003;
 
 // Position structure
 typedef struct {
