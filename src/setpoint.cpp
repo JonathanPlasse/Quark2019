@@ -20,7 +20,7 @@ delta_move_t* Setpoint::update() {
   _delta_move.delta_translation = sqrtf(delta_x*delta_x + delta_y*delta_y);
   _delta_move.delta_rotation = pi_modulo(atan2f(delta_y, delta_x) - _current_position->theta);
 
-  if (_delta_move.delta_translation <= 0.5) {
+  if (_delta_move.delta_translation <= 1) {
     _delta_move.delta_translation = 0;
     _delta_move.delta_rotation = 0;
   }
