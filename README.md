@@ -8,6 +8,7 @@ This is the code of the robot "Le Jamais Testé" for the Coupe de France de Robo
   - [ ] with straight lines
   - [ ] with orientation
 - [ ] Add settings for limits
+- [ ] Add possibility to go backwards
 
 ### Ramp
 - [ ] Explain unit of acceleration and speed
