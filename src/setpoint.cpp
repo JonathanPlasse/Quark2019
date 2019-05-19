@@ -48,7 +48,8 @@ delta_move_t* Setpoint::update() {
       if (fabsf(_delta_move.delta_translation) <= 0.5) {
         _delta_move.delta_translation = 0;
         _delta_move.delta_rotation = 0;
-        _state = TURN;
+        // _state = TURN;
+        _state = STOP;
       }
       break;
     case TURN:

@@ -10,7 +10,7 @@ const uint32_t resolution = 1633;
 const float center_distance = 19.65;
 
 // Wheel diameter
-const float wheel_perimeter = 23.3;
+const float wheel_perimeter = 23.4;
 
 // Wheel diameter ratio (left/right)
 const float wheel_ratio = 1.003;
