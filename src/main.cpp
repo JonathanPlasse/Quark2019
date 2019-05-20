@@ -34,8 +34,8 @@ float min_command = -200, max_command = 200;
 float error_threshold = 0, pwm_threshold = 150;
 
 // Initialization of the system variables
-control_t left_control = {0, 0, 0}, last_left_control = {0, 0, 0};
-control_t right_control = {0, 0, 0}, last_right_control = {0, 0, 0};
+control_t left_control = {0, 0, 0};
+control_t right_control = {0, 0, 0};
 
 
 // Initialization of the RST
@@ -103,8 +103,6 @@ void timer(uint32_t time, uint8_t sample_time) {
 
 void control_system() {
   // Read motor position
-  left_control = last_left_control;
-  right_control = last_right_control;
   left_control.measurement = left_encoder.read();
   right_control.measurement = right_encoder.read();
 
