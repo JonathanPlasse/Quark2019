@@ -21,11 +21,6 @@ delta_move_t* Setpoint::update() {
   float delta_x = _setpoint_position->x - _current_position->x;
   float delta_y = _setpoint_position->y - _current_position->y;
 
-  if (_delta_move.delta_rotation <= 0.05) {
-    _delta_move.delta_translation = 0;
-    _delta_move.delta_rotation = 0;
-  }
-
   switch(_state) {
     case STOP:
       _delta_move.delta_translation = 0;
@@ -35,15 +30,27 @@ delta_move_t* Setpoint::update() {
       _delta_move.delta_translation = 0;
       _delta_move.delta_rotation = pi_modulo(atan2f(delta_y, delta_x) - _current_position->theta);
 
+      // Go backwards ?
+      if (fabsf(_delta_move.delta_rotation) >= M_PI_2) {
+        _delta_move.delta_rotation = pi_modulo(_delta_move.delta_rotation + M_PI);
+      }
+
       if (fabsf(_delta_move.delta_rotation) <= 0.05) {
         _delta_move.delta_translation = 0;
         _delta_move.delta_rotation = 0;
         _state = MOVE;
       }
+
       break;
     case MOVE:
       _delta_move.delta_translation = sqrtf(delta_x*delta_x + delta_y*delta_y);
       _delta_move.delta_rotation = pi_modulo(atan2f(delta_y, delta_x) - _current_position->theta);
+
+      // Go backwards ?
+      if (fabsf(_delta_move.delta_rotation) >= M_PI_2) {
+        _delta_move.delta_translation *= -1;
+        _delta_move.delta_rotation = pi_modulo(_delta_move.delta_rotation + M_PI);
+      }
 
       if (fabsf(_delta_move.delta_translation) <= 0.5) {
         _delta_move.delta_translation = 0;
@@ -51,6 +58,7 @@ delta_move_t* Setpoint::update() {
         // _state = TURN;
         _state = STOP;
       }
+
       break;
     case TURN:
       _delta_move.delta_translation = 0;
