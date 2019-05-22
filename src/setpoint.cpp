@@ -13,7 +13,7 @@ void Setpoint::set_setpoint_position(const position_t* setpoint_position) {
   _state = ORIENT;
 }
 
-bool Setpoint::isStoped() const {
+bool Setpoint::isStopped() const {
   return _state == STOP;
 }
 
