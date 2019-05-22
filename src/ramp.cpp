@@ -42,6 +42,11 @@ void Ramp::compute(float* delta_position) {
   *delta_position = _speed * _sample_time;
 }
 
+bool Ramp::isStopped() {
+  // Flag: possible problem of equality of a float to 0
+  return _speed == 0;
+}
+
 float Ramp::_filter_limit(float value, float limit) {
   if (value > limit) {
     return limit;

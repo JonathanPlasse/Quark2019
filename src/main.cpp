@@ -118,7 +118,7 @@ void control_system() {
   odometry.update(left_control.measurement, right_control.measurement);
 
   // Update goal point
-  if (setpoint.isStopped()) {
+  if (setpoint.isStopped() && translation_ramp.isStopped() && rotation_ramp.isStopped()) {
     i_position = (i_position+1)%nb_move;
     setpoint.set_setpoint_position(&setpoint_position[i_position]);
   }

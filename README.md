@@ -12,6 +12,7 @@ This is the code of the robot "Le Jamais Testé" for the Coupe de France de Robo
 - [x] Add possibility to go backwards
 
 ### Ramp
+- [x] Add `isStopped` function
 - [ ] Explain unit of acceleration and speed
 
 ### Trajectory

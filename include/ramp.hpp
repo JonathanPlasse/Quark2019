@@ -7,6 +7,9 @@ public:
   // Initialize Ramp class
   Ramp(float max_speed, float max_acceleration, float sample_time);
 
+  // Return true if stopped
+  bool isStopped();
+
   // Compute speed ramp
   void compute(float* delta_position);
 
