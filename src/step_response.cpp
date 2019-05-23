@@ -9,7 +9,8 @@ void step_response(Motor* motor, Encoder* encoder) {
   uint8_t nb_measure_done = 0;
   uint16_t nb_sample_done = 0;
 
-  uint32_t last_time, last_position;
+  uint32_t last_time;
+  int32_t last_position;
 
   read_data(&config, sizeof(config));
 

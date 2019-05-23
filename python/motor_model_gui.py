@@ -152,7 +152,7 @@ class MotorModel(QWidget):
 
         # Define the format of the structure of data sent
         structFormatConfig = ['uint8', 'uint8', 'uint8', 'uint16', 'uint16']
-        structFormatMeasure = ['uint32', 'uint32', 'float']
+        structFormatMeasure = ['uint32', 'int32', 'float']
 
         timestamps = np.zeros((self.nb_measure, self.nb_sample))
         positions = np.zeros((self.nb_measure, self.nb_sample))

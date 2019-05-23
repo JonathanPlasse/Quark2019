@@ -17,7 +17,7 @@ typedef struct {
 // Motor measure
 typedef struct {
   uint32_t timestamp;
-  uint32_t position;
+  int32_t position;
   float speed;
 } measure_t;
 
