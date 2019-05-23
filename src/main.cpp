@@ -31,12 +31,12 @@ float t2[order+1] = {8.201666597226364, -7.8016665972263635, 0.};
 
 float min_command = -200, max_command = 200;
 
-float error_threshold = 0, pwm_threshold = 150;
-
 // Initialization of the system variables
 control_t left_control = {0, 0, 0};
 control_t right_control = {0, 0, 0};
 
+float error_threshold = 1;
+float pwm_threshold = 150;
 
 // Initialization of the RST
 Rst left_rst(&left_control, min_command, max_command,
@@ -56,17 +56,18 @@ uint8_t i_position = 0;
 
 
 // 8 move
-// const uint8_t nb_move = 8;
-// position_t setpoint_position[nb_move] = {{20, 0, 0}, {20, 20, 1.57}, {0, 20, 3.14}, {0, 0, -1.57}, {0, -20, 0}, {-20, -20, 1.57}, {-20, 0, 3.14}, {0, 0, -1.57}};
+const uint8_t nb_move = 8;
+position_t setpoint_position[nb_move] = {{20, 0, 0}, {20, 20, 1.57}, {0, 20, 3.14}, {0, 0, -1.57}, {0, -20, 0}, {-20, -20, 1.57}, {-20, 0, 3.14}, {0, 0, -1.57}};
 // Go back and forth
-const uint8_t nb_move = 2;
-position_t setpoint_position[nb_move] = {{20, 0, 0}, {0, 0, 0}};
+// const uint8_t nb_move = 2;
+// position_t setpoint_position[nb_move] = {{100, 0, 0}, {0, 0, 0}};
 
 delta_move_t* delta_move;
-Setpoint setpoint(error_threshold);
+float step_threshold = 30;
+Setpoint setpoint(step_threshold, true, false, false);
 
 Ramp translation_ramp(100, 100, sample_time/1000.);
-Ramp rotation_ramp(10, 8, sample_time/1000.);
+Ramp rotation_ramp(5, 5, sample_time/1000.);
 
 float tmp = sample_time/1000.;
 
